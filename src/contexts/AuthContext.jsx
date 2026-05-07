@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 
-const CORRECT_PIN = import.meta.env.VITE_APP_PIN
+const CORRECT_PIN = String(import.meta.env.VITE_APP_PIN)
 const STORAGE_KEY = 'gi-upflow-auth'
 
 const AuthContext = createContext(null)
