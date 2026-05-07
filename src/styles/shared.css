@@ -1,7 +1,7 @@
 /* ── Stats grid ───────────────────────────────────────────────────────────── */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 16px;
   margin-bottom: 32px;
 }
@@ -16,7 +16,8 @@
   gap: 6px;
 }
 
-.stat-card--highlight { border-color: var(--color-primary); }
+.stat-card--highlight      { border-color: var(--color-primary); }
+.stat-card--highlight-blue { border-color: #4285f4; }
 
 .stat-value {
   font-size: 32px;
@@ -25,7 +26,10 @@
   line-height: 1;
 }
 
-.stat-card--highlight .stat-value { color: var(--color-primary); }
+.stat-card--highlight .stat-value      { color: var(--color-primary); }
+.stat-card--highlight-blue .stat-value { color: #2563c9; }
+
+:root.dark .stat-card--highlight-blue .stat-value { color: #6ea8fe; }
 
 .stat-label {
   font-size: 13px;
