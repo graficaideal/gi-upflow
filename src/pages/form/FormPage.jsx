@@ -13,6 +13,14 @@ const STEPS = ['Empresa', 'Contactos', 'Autorizações', 'RGPD']
 
 export default function FormPage() {
   const { token } = useParams()
+
+  useEffect(() => {
+    const stored = localStorage.getItem('upflow-theme')
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isDark = stored ? stored === 'dark' : prefersDark
+    document.documentElement.classList.toggle('dark', isDark)
+  }, [])
+
   const [link, setLink] = useState(null)
   const [status, setStatus] = useState('loading') // loading | invalid | expired | completed | active | done
   const [step, setStep] = useState(0)
