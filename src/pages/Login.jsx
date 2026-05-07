@@ -96,7 +96,7 @@ export default function Login() {
         <select
           className="login-vendor-select"
           value={selectedVendorId}
-          onChange={e => setSelectedVendorId(e.target.value)}
+          onChange={e => { setSelectedVendorId(e.target.value); inputRef.current?.focus() }}
           onClick={e => e.stopPropagation()}
         >
           <option value="">— Acesso Geral —</option>
