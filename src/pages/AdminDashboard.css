@@ -1,0 +1,74 @@
+/* Shared UI (stats, table, badges, buttons) lives in styles/shared.css */
+
+.admin-dashboard {
+  max-width: 1200px;
+}
+
+.admin-header {
+  margin-bottom: 28px;
+}
+
+.admin-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+
+.admin-subtitle {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* ── Filters ──────────────────────────────────── */
+.admin-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text);
+  font-size: 14px;
+  font-family: var(--font-base);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+  min-width: 180px;
+}
+
+.filter-select:focus {
+  border-color: var(--color-primary);
+}
+
+/* ── "Criado por" column — muted ──────────────── */
+.td-creator {
+  color: var(--color-text-muted) !important;
+  font-size: 13px;
+}
+
+/* ── Empty / loading ──────────────────────────── */
+.admin-state {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  padding: 40px 0;
+}
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 768px) {
+  .admin-filters {
+    flex-direction: column;
+  }
+
+  .filter-select {
+    width: 100%;
+    min-width: unset;
+  }
+}

@@ -1,0 +1,246 @@
+.link-detail {
+  max-width: 800px;
+}
+
+.detail-header {
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-base);
+  transition: color 0.15s;
+}
+
+.back-btn:hover { color: var(--color-text); }
+
+/* ── Info card ─────────────────────────────────────────────────────────────── */
+.detail-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.detail-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.detail-client {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.detail-company {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* ── Meta row ──────────────────────────────────────────────────────────────── */
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.detail-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detail-meta-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.detail-meta-value {
+  font-size: 14px;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* ── Link copy row ─────────────────────────────────────────────────────────── */
+.detail-link-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.detail-link-input {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-family: var(--font-base);
+  outline: none;
+  min-width: 0;
+}
+
+.btn-copy-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: var(--color-sidebar);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-base);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.btn-copy-detail:hover { opacity: 0.88; }
+
+/* ── Submission section ────────────────────────────────────────────────────── */
+.submission-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 16px;
+  margin-top: 8px;
+}
+
+.sub-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+}
+
+/* ── Fields grid ───────────────────────────────────────────────────────────── */
+.sub-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 32px;
+}
+
+.sub-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sub-field-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.sub-field-value {
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+/* ── Contacts ──────────────────────────────────────────────────────────────── */
+.contacts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.contact-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-dept {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+/* ── Authorizations ────────────────────────────────────────────────────────── */
+.auth-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.auth-row:last-child { border-bottom: none; }
+
+.auth-label {
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.auth-value {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.auth-yes { background: rgba(52, 168, 83, 0.12); color: #2d8c48; }
+.auth-no  { background: rgba(234, 67, 53, 0.10);  color: #c0392b; }
+
+:root.dark .auth-yes { background: rgba(52, 168, 83, 0.2); color: #5ec97a; }
+:root.dark .auth-no  { background: rgba(234, 67, 53, 0.2); color: #e57373; }
+
+/* ── State messages ────────────────────────────────────────────────────────── */
+.detail-state {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  padding: 40px 0;
+}
+
+.detail-state--error { color: #e57373; }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .detail-card { padding: 16px; }
+
+  .detail-client { font-size: 18px; }
+
+  .sub-fields { grid-template-columns: 1fr; }
+
+  .contacts-grid { grid-template-columns: 1fr; gap: 16px; }
+
+  .detail-link-row { flex-direction: column; align-items: stretch; }
+
+  .btn-copy-detail { justify-content: center; }
+}

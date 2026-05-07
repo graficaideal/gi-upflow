@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(cp -r \"C:/Users/sergiohenriques/GitHub/upflow-temp/.\" \"C:/Users/sergiohenriques/GitHub/gi-upflow/\")",
+      "Bash(rm -rf \"C:/Users/sergiohenriques/GitHub/upflow-temp\")",
+      "Bash(npm install *)",
+      "Bash(mkdir *)",
+      "Bash(cat)",
+      "Bash(npm run *)",
+      "Bash(node --input-type=module)",
+      "Bash(node -e \"require\\('react-hook-form'\\)\")",
+      "Bash(npx kill-port *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(netstat -ano)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:5173/)"
+    ]
+  }
+}

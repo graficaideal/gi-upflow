@@ -1,0 +1,386 @@
+/* ── Page shell ────────────────────────────────────────────────────────────── */
+.form-page {
+  min-height: 100vh;
+  background: var(--color-bg);
+  font-family: var(--font-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-page--center {
+  justify-content: center;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.form-header {
+  width: 100%;
+  background: #333F48;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-logo-img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.form-client-name {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.02em;
+}
+
+/* ── Progress ──────────────────────────────────────────────────────────────── */
+.form-progress-wrap {
+  width: 100%;
+  max-width: 640px;
+  padding: 32px 24px 0;
+}
+
+.form-progress {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.form-step-dot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 1;
+}
+
+.dot-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.dot-active .dot-circle {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #333F48;
+}
+
+.dot-done .dot-circle {
+  border-color: #34a853;
+  background: #34a853;
+  color: #fff;
+}
+
+.dot-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.dot-active .dot-label { color: var(--color-text); }
+.dot-done  .dot-label  { color: #34a853; }
+
+.progress-track {
+  position: absolute;
+  top: 15px;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: var(--color-border);
+  z-index: 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  transition: width 0.3s ease;
+}
+
+/* ── Form body ─────────────────────────────────────────────────────────────── */
+.form-body {
+  width: 100%;
+  max-width: 640px;
+  padding: 28px 24px 48px;
+}
+
+.form-submit-error {
+  background: rgba(234, 67, 53, 0.1);
+  border: 1px solid rgba(234, 67, 53, 0.3);
+  color: #c0392b;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* ── Message cards (invalid / expired / completed) ─────────────────────────── */
+.form-message-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 40px 32px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  margin: 0 24px;
+}
+
+.form-message-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.form-message-card h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.form-message-card p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.success-icon {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ── Spinner ───────────────────────────────────────────────────────────────── */
+.form-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(224, 203, 75, 0.3);
+  border-top-color: #e0cb4b;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg) } }
+
+/* ── Shared step card ──────────────────────────────────────────────────────── */
+.step-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 28px;
+}
+
+.step-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.step-subtitle {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+/* ── Form field groups ─────────────────────────────────────────────────────── */
+.fg {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.fg-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.fg label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.fg input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+  font-family: var(--font-base);
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fg input:focus { border-color: var(--color-primary); }
+.fg input.input-error { border-color: #e57373; }
+
+.fg-error {
+  font-size: 12px;
+  color: #e57373;
+}
+
+/* ── Step navigation ───────────────────────────────────────────────────────── */
+.step-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  gap: 12px;
+}
+
+.step-nav-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+/* ── Dept section ──────────────────────────────────────────────────────────── */
+.dept-section {
+  margin-bottom: 24px;
+}
+
+.dept-section:last-child { margin-bottom: 0; }
+
+.dept-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-primary);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ── Auth buttons ──────────────────────────────────────────────────────────── */
+.auth-question {
+  margin-bottom: 20px;
+}
+
+.auth-question-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.auth-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-base);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.auth-btn:hover { border-color: var(--color-primary); }
+
+.auth-btn.selected-sim {
+  border-color: #34a853;
+  background: rgba(52, 168, 83, 0.1);
+  color: #2d8c48;
+}
+
+.auth-btn.selected-nao {
+  border-color: #ea4335;
+  background: rgba(234, 67, 53, 0.08);
+  color: #c0392b;
+}
+
+:root.dark .auth-btn.selected-sim { background: rgba(52, 168, 83, 0.18); color: #5ec97a; }
+:root.dark .auth-btn.selected-nao { background: rgba(234, 67, 53, 0.15); color: #e57373; }
+
+/* ── RGPD ──────────────────────────────────────────────────────────────────── */
+.rgpd-text {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.rgpd-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.rgpd-checkbox-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.rgpd-checkbox-row label {
+  font-size: 14px;
+  color: var(--color-text);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+/* ── PDF download link ─────────────────────────────────────────────────────── */
+.form-pdf-link-wrap {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.form-pdf-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #8d9190;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.form-pdf-link:hover { color: #e0cb4b; }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .form-progress-wrap { padding: 24px 16px 0; }
+  .form-body { padding: 20px 16px 40px; }
+  .step-card { padding: 20px; }
+  .fg-row { grid-template-columns: 1fr; gap: 0; }
+  .dot-label { display: none; }
+}

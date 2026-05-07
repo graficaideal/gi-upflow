@@ -1,0 +1,50 @@
+/* Shared UI (stats, table, badges, buttons, FAB) lives in styles/shared.css */
+
+.dashboard {
+  max-width: 1100px;
+}
+
+.dashboard-header {
+  margin-bottom: 28px;
+}
+
+.dashboard-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+
+.dashboard-subtitle {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.dashboard-loading {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.dashboard-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.td-vendor {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.dashboard-empty {
+  text-align: center;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--color-text-muted);
+}

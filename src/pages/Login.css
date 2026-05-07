@@ -1,0 +1,140 @@
+.login-page {
+  min-height: 100vh;
+  background: var(--color-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+/* ── Brand ─────────────────────────────────────────────────────────────────── */
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.login-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.login-brand-name {
+  color: #fff;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* ── Hidden input (keyboard capture) ───────────────────────────────────────── */
+.login-hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+}
+
+/* ── PIN dots ──────────────────────────────────────────────────────────────── */
+.pin-dots {
+  display: flex;
+  gap: 12px;
+}
+
+.pin-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pin-dot.filled {
+  background: var(--color-yellow);
+  border-color: var(--color-yellow);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px); }
+  60%       { transform: translateX(-6px); }
+  80%       { transform: translateX(6px); }
+}
+
+.pin-dots--shake {
+  animation: shake 0.5s ease;
+}
+
+.login-error {
+  color: #ff6b6b;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.4;
+  margin-top: -16px;
+}
+
+/* ── PIN pad ───────────────────────────────────────────────────────────────── */
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.pin-key {
+  height: 60px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 500;
+  font-family: var(--font-base);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, transform 0.08s;
+  user-select: none;
+}
+
+.pin-key:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.pin-key:active {
+  transform: scale(0.94);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.pin-key--action {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 22px;
+}
+
+.pin-key--confirm {
+  color: var(--color-yellow);
+  border-color: rgba(224, 203, 75, 0.3);
+}
+
+.pin-key--confirm:not(:disabled):hover {
+  background: rgba(224, 203, 75, 0.12);
+}
+
+.pin-key:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
