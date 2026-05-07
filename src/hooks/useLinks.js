@@ -12,6 +12,12 @@ export async function getVendors() {
   return data ?? []
 }
 
+// Excludes 0, O, I, l, 1 to avoid visual confusion
+const generateToken = () => {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
+  return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+}
+
 export async function createLink(clientName, companyName, expiresAt, vendorId, vendorName) {
   const { data, error } = await supabase
     .from('upflow_links')
@@ -20,7 +26,7 @@ export async function createLink(clientName, companyName, expiresAt, vendorId, v
       company_name: companyName,
       expires_at:   expiresAt,
       status:       'pending',
-      token:        crypto.randomUUID(),
+      token:        generateToken(),
       vendor_id:    vendorId   || null,
       vendor_name:  vendorName || null,
     })
