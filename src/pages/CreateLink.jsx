@@ -39,19 +39,21 @@ export default function CreateLink() {
   const [submitError, setSubmitError] = useState('')
   const [vendors, setVendors] = useState([])
 
-  const storedVendorId = (() => {
-    try { return JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id ?? '' } catch { return '' }
-  })()
-
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
-    defaultValues: { vendor_id: storedVendorId, expires_at: getDefaultExpiry() },
+  const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm({
+    defaultValues: { expires_at: getDefaultExpiry() },
   })
 
   const minDate = getMinDate()
   const formUrl = token ? `${window.location.origin}/form/${token}` : null
 
   useEffect(() => {
-    getVendors().then(setVendors).catch(() => {})
+    getVendors().then(list => {
+      setVendors(list)
+      try {
+        const id = JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id
+        if (id) setValue('vendor_id', id)
+      } catch {}
+    }).catch(() => {})
   }, [])
 
   async function onSubmit({ vendor_id, client_name, company_name, expires_at }) {
