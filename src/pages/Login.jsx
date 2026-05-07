@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import './Login.css'
 
-const PIN_LENGTH = 6
-
 function BackspaceIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
@@ -28,11 +26,8 @@ export default function Login() {
   }, [])
 
   function addDigit(digit) {
-    if (pin.length >= PIN_LENGTH) return
     setError('')
-    const next = pin + digit
-    setPin(next)
-    if (next.length === PIN_LENGTH) tryLogin(next)
+    setPin(p => p + digit)
   }
 
   function deleteDigit() {
@@ -53,7 +48,7 @@ export default function Login() {
   function handleKeyDown(e) {
     if (e.key >= '0' && e.key <= '9') addDigit(e.key)
     else if (e.key === 'Backspace') deleteDigit()
-    else if (e.key === 'Enter' && pin.length === PIN_LENGTH) tryLogin(pin)
+    else if (e.key === 'Enter' && pin.length > 0) tryLogin(pin)
   }
 
   const keys = ['1','2','3','4','5','6','7','8','9']
@@ -79,8 +74,8 @@ export default function Login() {
         />
 
         <div className={`pin-dots${shake ? ' pin-dots--shake' : ''}`}>
-          {Array.from({ length: PIN_LENGTH }).map((_, i) => (
-            <span key={i} className={`pin-dot${i < pin.length ? ' filled' : ''}`} />
+          {Array.from({ length: pin.length }).map((_, i) => (
+            <span key={i} className="pin-dot filled" />
           ))}
         </div>
 
@@ -97,11 +92,11 @@ export default function Login() {
           <button
             className="pin-key pin-key--action pin-key--confirm"
             type="button"
-            disabled={pin.length !== PIN_LENGTH}
+            disabled={pin.length === 0}
             onClick={() => tryLogin(pin)}
             aria-label="Confirmar"
           >
-            ↵
+            ✓
           </button>
         </div>
       </div>
