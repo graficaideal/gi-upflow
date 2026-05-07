@@ -27,6 +27,11 @@ function formatDate(str) {
   return new Date(str).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })
 }
 
+function formatDateTime(str) {
+  if (!str) return '—'
+  return new Date(str).toLocaleString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+}
+
 function StatCard({ label, value, highlight }) {
   return (
     <div className={`stat-card${highlight ? ' stat-card--highlight' : ''}`}>
@@ -168,6 +173,7 @@ export default function Dashboard() {
                   <th>Vendedor</th>
                   <th>Criado em</th>
                   <th>Prazo</th>
+                  <th>Aberto em</th>
                   <th>Estado</th>
                   <th></th>
                 </tr>
@@ -182,10 +188,8 @@ export default function Dashboard() {
                       <td className="td-vendor">{link.vendor_name ?? '—'}</td>
                       <td>{formatDate(link.created_at)}</td>
                       <td>{formatDate(link.expires_at)}</td>
-                      <td>
-                        <span className={`status-badge ${s.cls}`}>{s.label}</span>
-                        {link.opened_at && <p className="td-opened-at">Aberto {formatDate(link.opened_at)}</p>}
-                      </td>
+                      <td className="td-muted">{formatDateTime(link.opened_at)}</td>
+                      <td><span className={`status-badge ${s.cls}`}>{s.label}</span></td>
                       <td>
                         <div className="td-actions">
                           <Link to={`/links/${link.id}`} className="btn-detail">Ver detalhe</Link>
@@ -222,10 +226,10 @@ export default function Dashboard() {
                     <span className={`status-badge ${s.cls}`}>{s.label}</span>
                   </div>
                   <div className="link-card-bottom">
-                    <span className="link-card-date">
-                      Prazo: {formatDate(link.expires_at)}
-                      {link.opened_at && <span className="card-opened-at"> · Aberto {formatDate(link.opened_at)}</span>}
-                    </span>
+                    <div>
+                      <span className="link-card-date">Prazo: {formatDate(link.expires_at)}</span>
+                      <span className="link-card-date">Aberto: {formatDateTime(link.opened_at)}</span>
+                    </div>
                     <div className="td-actions">
                       <button
                         className="btn-icon btn-icon--danger"
