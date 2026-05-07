@@ -1,12 +1,6 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-
-function formatPhone(raw) {
-  const digits = raw.replace(/\D/g, '').slice(0, 9)
-  if (digits.length <= 3) return digits
-  if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`
-  return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`
-}
+import { formatPhone } from '../../utils/phone'
 
 const DEPARTMENTS = [
   { key: 'compras',    label: 'Compras' },
