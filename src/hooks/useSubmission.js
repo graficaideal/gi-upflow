@@ -16,20 +16,20 @@ export async function submitForm(token, formData) {
   const { data: submission, error: subError } = await supabase
     .from('upflow_submissions')
     .insert({
-      link_id:       link.id,
-      company_name:  formData.company_name,
-      nif:           formData.nif,
-      morada:        formData.morada,
-      codigo_postal: formData.codigo_postal,
-      localidade:    formData.localidade,
-      telefone:           formData.telefone           || null,
-      telemovel:          formData.telemovel          || null,
-      email:              formData.email              || null,
-      site:               formData.site               || null,
+      link_id:            link.id,
+      company_name:       formData.company_name,
+      nif:                formData.nif,
+      address:            formData.morada          || null,
+      postal_code:        formData.codigo_postal   || null,
+      city:               formData.localidade      || null,
+      phone:              formData.telefone        || null,
+      mobile:             formData.telemovel       || null,
+      email:              formData.email           || null,
+      website:            formData.site            || null,
       billing_same_email: formData.billing_same_email ?? null,
-      billing_email:      formData.billing_email      || null,
-      billing_mode:       formData.billing_mode       || null,
-      billing_notes:      formData.billing_notes      || null,
+      billing_email:      formData.billing_email   || null,
+      billing_mode:       formData.billing_mode    || null,
+      billing_notes:      formData.billing_notes   || null,
     })
     .select('id')
     .single()
@@ -45,8 +45,8 @@ export async function submitForm(token, formData) {
       department:    dept,
       nome:          formData[`${dept}_nome`],
       email:         formData[`${dept}_email`],
-      telefone:      formData[`${dept}_telefone`]  || null,
-      telemovel:     formData[`${dept}_telemovel`] || null,
+      phone:         formData[`${dept}_telefone`]  || null,
+      mobile:        formData[`${dept}_telemovel`] || null,
     }))
 
   if (contactRows.length > 0) {
