@@ -5,6 +5,7 @@ import './LinkDetail.css'
 
 const STATUS_MAP = {
   pending:   { label: 'Pendente',  cls: 'badge-pending' },
+  opened:    { label: 'Aberto',    cls: 'badge-opened' },
   completed: { label: 'Concluído', cls: 'badge-completed' },
   expired:   { label: 'Expirado',  cls: 'badge-expired' },
 }
@@ -109,6 +110,12 @@ export default function LinkDetail() {
             <span className="detail-meta-label">Prazo</span>
             <span className="detail-meta-value">{formatDate(link.expires_at)}</span>
           </div>
+          {link.opened_at && (
+            <div className="detail-meta-item">
+              <span className="detail-meta-label">Aberto em</span>
+              <span className="detail-meta-value">{formatDate(link.opened_at)}</span>
+            </div>
+          )}
           {link.submitted_at && (
             <div className="detail-meta-item">
               <span className="detail-meta-label">Submetido em</span>
@@ -117,7 +124,7 @@ export default function LinkDetail() {
           )}
         </div>
 
-        {link.status === 'pending' && (
+        {(link.status === 'pending' || link.status === 'opened') && (
           <div className="detail-link-row">
             <input
               className="detail-link-input"

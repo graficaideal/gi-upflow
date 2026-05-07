@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { getLinkByToken } from '../../hooks/useLinks'
+import { getLinkByToken, markOpened } from '../../hooks/useLinks'
 import { submitForm } from '../../hooks/useSubmission'
 import StepCompany from './StepCompany'
 import StepContacts from './StepContacts'
@@ -29,6 +29,7 @@ export default function FormPage() {
         const today = new Date().toISOString().split('T')[0]
         if (data.expires_at < today)     { setStatus('expired');   return }
         setStatus('active')
+        if (data.status === 'pending') markOpened(token).catch(() => {})
       })
       .catch(() => setStatus('invalid'))
   }, [token])

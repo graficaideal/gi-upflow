@@ -17,6 +17,7 @@ function TrashIcon() {
 
 const STATUS_MAP = {
   pending:   { label: 'Pendente',  cls: 'badge-pending' },
+  opened:    { label: 'Aberto',    cls: 'badge-opened' },
   completed: { label: 'Concluído', cls: 'badge-completed' },
   expired:   { label: 'Expirado',  cls: 'badge-expired' },
 }
@@ -107,6 +108,7 @@ export default function Dashboard() {
         >
           <option value="all">Todos os estados</option>
           <option value="pending">Pendente</option>
+          <option value="opened">Aberto</option>
           <option value="completed">Concluído</option>
           <option value="expired">Expirado</option>
         </select>
@@ -180,7 +182,10 @@ export default function Dashboard() {
                       <td className="td-vendor">{link.vendor_name ?? '—'}</td>
                       <td>{formatDate(link.created_at)}</td>
                       <td>{formatDate(link.expires_at)}</td>
-                      <td><span className={`status-badge ${s.cls}`}>{s.label}</span></td>
+                      <td>
+                        <span className={`status-badge ${s.cls}`}>{s.label}</span>
+                        {link.opened_at && <p className="td-opened-at">Aberto {formatDate(link.opened_at)}</p>}
+                      </td>
                       <td>
                         <div className="td-actions">
                           <Link to={`/links/${link.id}`} className="btn-detail">Ver detalhe</Link>
@@ -217,7 +222,10 @@ export default function Dashboard() {
                     <span className={`status-badge ${s.cls}`}>{s.label}</span>
                   </div>
                   <div className="link-card-bottom">
-                    <span className="link-card-date">Prazo: {formatDate(link.expires_at)}</span>
+                    <span className="link-card-date">
+                      Prazo: {formatDate(link.expires_at)}
+                      {link.opened_at && <span className="card-opened-at"> · Aberto {formatDate(link.opened_at)}</span>}
+                    </span>
                     <div className="td-actions">
                       <button
                         className="btn-icon btn-icon--danger"
