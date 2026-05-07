@@ -40,7 +40,7 @@ export default function CreateLink() {
   const [vendors, setVendors] = useState([])
 
   const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm({
-    defaultValues: { expires_at: getDefaultExpiry() },
+    defaultValues: { vendor_id: '', expires_at: getDefaultExpiry() },
   })
 
   const minDate = getMinDate()
@@ -55,8 +55,10 @@ export default function CreateLink() {
     if (vendors.length === 0) return
     try {
       const id = JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id
-      if (id) setValue('vendor_id', id)
-    } catch {}
+      setValue('vendor_id', id || '')
+    } catch {
+      setValue('vendor_id', '')
+    }
   }, [vendors])
 
   async function onSubmit({ vendor_id, client_name, company_name, expires_at }) {
