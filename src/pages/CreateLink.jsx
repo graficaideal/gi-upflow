@@ -27,13 +27,21 @@ function getMinDate() {
   return d.toISOString().split('T')[0]
 }
 
+function getDefaultExpiry() {
+  const d = new Date()
+  d.setMonth(d.getMonth() + 1)
+  return d.toISOString().split('T')[0]
+}
+
 export default function CreateLink() {
   const [token, setToken] = useState(null)
   const [copied, setCopied] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [vendors, setVendors] = useState([])
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm()
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
+    defaultValues: { expires_at: getDefaultExpiry() },
+  })
 
   const minDate = getMinDate()
   const formUrl = token ? `${window.location.origin}/form/${token}` : null
