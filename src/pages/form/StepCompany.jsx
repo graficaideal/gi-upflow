@@ -19,9 +19,8 @@ export default function StepCompany({ formData, onNext, companyName }) {
   })
 
   function onSubmit(data) {
-    const hasContact = data.telefone || data.telemovel || data.email
-    if (!hasContact) {
-      setContactError('Indique pelo menos um meio de contacto: telefone, telemóvel ou email.')
+    if (!data.telefone && !data.telemovel) {
+      setContactError('Introduz pelo menos um número de contacto')
       return
     }
     setContactError(null)
@@ -92,6 +91,7 @@ export default function StepCompany({ formData, onNext, companyName }) {
           <div className="fg">
             <label>Telefone</label>
             <input
+              className={contactError ? 'input-error' : ''}
               {...register('telefone')}
               onChange={e => setValue('telefone', formatPhone(e.target.value))}
               placeholder="XXX XXX XXX"
@@ -100,21 +100,24 @@ export default function StepCompany({ formData, onNext, companyName }) {
           <div className="fg">
             <label>Telemóvel</label>
             <input
+              className={contactError ? 'input-error' : ''}
               {...register('telemovel')}
               onChange={e => setValue('telemovel', formatPhone(e.target.value))}
               placeholder="XXX XXX XXX"
             />
           </div>
         </div>
+        {contactError && <span className="fg-error">{contactError}</span>}
 
         <div className="fg-row">
           <div className="fg">
-            <label>Email</label>
+            <label>Email *</label>
             <input
               type="email"
               className={errors.email ? 'input-error' : ''}
               {...register('email', {
-                validate: v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email inválido',
+                required: 'O email é obrigatório',
+                validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email inválido',
               })}
             />
             {errors.email && <span className="fg-error">{errors.email.message}</span>}
@@ -124,10 +127,6 @@ export default function StepCompany({ formData, onNext, companyName }) {
             <input {...register('site')} />
           </div>
         </div>
-
-        {contactError && (
-          <div className="fg-error" style={{ marginBottom: 12 }}>{contactError}</div>
-        )}
 
         <div className="step-nav-right">
           <button type="submit" className="btn-primary">Seguinte →</button>
