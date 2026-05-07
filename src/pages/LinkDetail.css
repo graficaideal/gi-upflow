@@ -165,13 +165,16 @@
 }
 
 /* ── Contacts ──────────────────────────────────────────────────────────────── */
-.contacts-grid {
+.dept-sub-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 16px;
 }
 
-.contact-block {
+.dept-sub-card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -184,6 +187,12 @@
   letter-spacing: 0.07em;
   color: var(--color-primary);
   margin-bottom: 4px;
+}
+
+.dept-empty {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-style: italic;
 }
 
 /* ── Authorizations ────────────────────────────────────────────────────────── */
@@ -215,8 +224,9 @@
   border-radius: 20px;
 }
 
-.auth-yes { background: rgba(52, 168, 83, 0.12); color: #2d8c48; }
-.auth-no  { background: rgba(234, 67, 53, 0.10);  color: #c0392b; }
+.auth-yes  { background: rgba(52, 168, 83, 0.12); color: #2d8c48; }
+.auth-no   { background: rgba(234, 67, 53, 0.10); color: #c0392b; }
+.auth-date { background: none; color: var(--color-text-muted); font-weight: 400; }
 
 :root.dark .auth-yes { background: rgba(52, 168, 83, 0.2); color: #5ec97a; }
 :root.dark .auth-no  { background: rgba(234, 67, 53, 0.2); color: #e57373; }
@@ -238,7 +248,7 @@
 
   .sub-fields { grid-template-columns: 1fr; }
 
-  .contacts-grid { grid-template-columns: 1fr; gap: 16px; }
+  .dept-sub-cards { grid-template-columns: 1fr; gap: 12px; }
 
   .detail-link-row { flex-direction: column; align-items: stretch; }
 

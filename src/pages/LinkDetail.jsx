@@ -9,12 +9,27 @@ const STATUS_MAP = {
   expired:   { label: 'Expirado',  cls: 'badge-expired' },
 }
 
-const AUTH_LABELS = { fotos: 'Fotografias', videos: 'Vídeos', publicacoes: 'Publicações' }
-const DEPT_LABELS = { compras: 'Compras', financeiro: 'Financeiro', marketing: 'Marketing' }
+const AUTH_LABELS = {
+  fotos:       'Fotografias',
+  videos:      'Vídeos',
+  publicacoes: 'Publicações Corporativas',
+}
+const AUTH_ORDER = ['fotos', 'videos', 'publicacoes']
+
+const DEPT_LABELS = { compras: 'Dep. Compras', financeiro: 'Dep. Financeiro', marketing: 'Dep. Marketing' }
+const DEPT_ORDER  = ['compras', 'financeiro', 'marketing']
 
 function formatDate(str) {
   if (!str) return '—'
   return new Date(str).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
+function formatDateTime(str) {
+  if (!str) return '—'
+  return new Date(str).toLocaleString('pt-PT', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  })
 }
 
 function CopyIcon() {
@@ -123,64 +138,85 @@ export default function LinkDetail() {
         <div className="submission-section">
           <h3 className="submission-title">Dados Submetidos</h3>
 
-          {/* Company data */}
+          {/* Card 1 — Dados da Empresa */}
           <div className="detail-card">
-            <h4 className="sub-card-title">Empresa</h4>
+            <h4 className="sub-card-title">Dados da Empresa</h4>
             <div className="sub-fields">
-              <Field label="Nome" value={sub.company_name} />
-              <Field label="NIF" value={sub.nif} />
-              <Field label="Morada" value={sub.morada} />
-              <Field label="Código Postal" value={sub.codigo_postal} />
-              <Field label="Localidade" value={sub.localidade} />
-              <Field label="Telefone" value={sub.telefone} />
-              <Field label="Telemóvel" value={sub.telemovel} />
-              <Field label="Email" value={sub.email} />
-              <Field label="Website" value={sub.site} />
+              <Field label="Nome da Empresa"  value={sub.company_name} />
+              <Field label="NIF"              value={sub.nif} />
+              <Field label="Morada"           value={sub.morada} />
+              <Field label="Código Postal"    value={sub.codigo_postal} />
+              <Field label="Localidade"       value={sub.localidade} />
+              <Field label="Telefone"         value={sub.telefone} />
+              <Field label="Telemóvel"        value={sub.telemovel} />
+              <Field label="Email"            value={sub.email} />
+              <Field label="Site"             value={sub.site} />
             </div>
           </div>
 
-          {/* Contacts */}
-          {sub.contacts.length > 0 && (
-            <div className="detail-card">
-              <h4 className="sub-card-title">Contactos</h4>
-              <div className="contacts-grid">
-                {sub.contacts.map(c => (
-                  <div key={c.id} className="contact-block">
-                    <p className="contact-dept">{DEPT_LABELS[c.department] ?? c.department}</p>
-                    <Field label="Nome" value={c.nome} />
-                    <Field label="Email" value={c.email} />
-                    {c.telefone  && <Field label="Telefone"  value={c.telefone} />}
-                    {c.telemovel && <Field label="Telemóvel" value={c.telemovel} />}
+          {/* Card 2 — Contactos por Departamento */}
+          <div className="detail-card">
+            <h4 className="sub-card-title">Contactos por Departamento</h4>
+            <div className="dept-sub-cards">
+              {DEPT_ORDER.map(dept => {
+                const c = sub.contacts.find(x => x.department === dept)
+                return (
+                  <div key={dept} className="dept-sub-card">
+                    <p className="contact-dept">{DEPT_LABELS[dept]}</p>
+                    {c ? (
+                      <>
+                        <Field label="Nome"      value={c.nome} />
+                        <Field label="Email"     value={c.email} />
+                        <Field label="Telefone"  value={c.telefone} />
+                        <Field label="Telemóvel" value={c.telemovel} />
+                      </>
+                    ) : (
+                      <p className="dept-empty">Sem dados registados</p>
+                    )}
                   </div>
-                ))}
-              </div>
+                )
+              })}
             </div>
-          )}
+          </div>
 
-          {/* Authorizations */}
+          {/* Card 3 — Consentimento RGPD */}
+          <div className="detail-card">
+            <h4 className="sub-card-title">Consentimento RGPD</h4>
+            <div className="auth-list">
+              <div className="auth-row">
+                <span className="auth-label">Aceite</span>
+                <span className={`auth-value ${sub.rgpd_consent ? 'auth-yes' : 'auth-no'}`}>
+                  {sub.rgpd_consent ? 'Sim' : 'Não'}
+                </span>
+              </div>
+              {sub.rgpd_consent?.accepted_at && (
+                <div className="auth-row">
+                  <span className="auth-label">Data e hora de aceitação</span>
+                  <span className="auth-value auth-date">
+                    {formatDateTime(sub.rgpd_consent.accepted_at)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Card 4 — Autorizações de Imagem */}
           {sub.authorizations.length > 0 && (
             <div className="detail-card">
-              <h4 className="sub-card-title">Autorizações de Comunicação</h4>
+              <h4 className="sub-card-title">Autorizações de Imagem</h4>
               <div className="auth-list">
-                {sub.authorizations.map(a => (
-                  <div key={a.id} className="auth-row">
-                    <span className="auth-label">{AUTH_LABELS[a.type] ?? a.type}</span>
-                    <span className={`auth-value ${a.authorized ? 'auth-yes' : 'auth-no'}`}>
-                      {a.authorized ? 'Autorizado' : 'Não autorizado'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* RGPD */}
-          {sub.rgpd_consent && (
-            <div className="detail-card">
-              <h4 className="sub-card-title">RGPD</h4>
-              <div className="auth-row">
-                <span className="auth-label">Consentimento</span>
-                <span className="auth-value auth-yes">Aceite em {formatDate(sub.rgpd_consent.accepted_at)}</span>
+                {AUTH_ORDER
+                  .map(type => sub.authorizations.find(a => a.type === type))
+                  .filter(Boolean)
+                  .map(a => (
+                    <div key={a.id} className="auth-row">
+                      <span className="auth-label">{AUTH_LABELS[a.type] ?? a.type}</span>
+                      <span className={`auth-value ${a.authorized ? 'auth-yes' : 'auth-no'}`}>
+                        {a.authorized ? '✅ Autorizado' : '❌ Não Autorizado'}
+                      </span>
+                    </div>
+                  ))
+                }
               </div>
             </div>
           )}
