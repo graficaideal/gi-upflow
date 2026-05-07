@@ -40,6 +40,17 @@ export default function Dashboard() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [vendorFilter, setVendorFilter] = useState('all')
   const [deletingLink, setDeletingLink] = useState(null)
+  const [hideCompleted, setHideCompleted] = useState(
+    () => localStorage.getItem('upflow-hide-completed') === 'true'
+  )
+
+  function toggleHideCompleted() {
+    setHideCompleted(prev => {
+      const next = !prev
+      localStorage.setItem('upflow-hide-completed', String(next))
+      return next
+    })
+  }
 
   async function handleDeleteConfirm(id) {
     await deleteLink(id)
@@ -58,8 +69,9 @@ export default function Dashboard() {
   const filtered = useMemo(() => links.filter(l => {
     const statusOk = statusFilter === 'all' || l.status === statusFilter
     const vendorOk = vendorFilter === 'all' || l.vendor_name === vendorFilter
-    return statusOk && vendorOk
-  }), [links, statusFilter, vendorFilter])
+    const notHidden = !(hideCompleted && l.status === 'completed')
+    return statusOk && vendorOk && notHidden
+  }), [links, statusFilter, vendorFilter, hideCompleted])
 
   const stats = {
     total:     links.length,
@@ -104,6 +116,15 @@ export default function Dashboard() {
             <option key={v} value={v}>{v}</option>
           ))}
         </select>
+
+        <label className="filter-toggle">
+          <input
+            type="checkbox"
+            checked={hideCompleted}
+            onChange={toggleHideCompleted}
+          />
+          Ocultar concluídos
+        </label>
       </div>
 
       {loading && <p className="dashboard-loading">A carregar…</p>}
