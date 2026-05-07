@@ -65,7 +65,7 @@ export default function LinkDetail() {
   }, [id])
 
   function copyLink() {
-    const url = `${window.location.origin}/form/${link.token}`
+    const url = `${import.meta.env.VITE_APP_URL || window.location.origin}/form/${link.token}`
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
@@ -77,7 +77,8 @@ export default function LinkDetail() {
   if (!link)   return null
 
   const s = STATUS_MAP[link.status] ?? { label: link.status, cls: '' }
-  const formUrl = `${window.location.origin}/form/${link.token}`
+  const appUrl = import.meta.env.VITE_APP_URL || window.location.origin
+  const formUrl = `${appUrl}/form/${link.token}`
   const sub = link.submission
 
   return (

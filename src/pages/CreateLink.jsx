@@ -44,7 +44,8 @@ export default function CreateLink() {
   })
 
   const minDate = getMinDate()
-  const formUrl = token ? `${window.location.origin}/form/${token}` : null
+  const appUrl = import.meta.env.VITE_APP_URL || window.location.origin
+  const formUrl = token ? `${appUrl}/form/${token}` : null
 
   useEffect(() => {
     getVendors().then(setVendors).catch(() => {})
