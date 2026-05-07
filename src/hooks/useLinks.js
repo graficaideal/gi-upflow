@@ -97,6 +97,15 @@ export async function getLinkById(id) {
   }
 }
 
+export async function deleteLink(id) {
+  const { error } = await supabase
+    .from('upflow_links')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
+}
+
 export async function markExpired() {
   const today = new Date().toISOString().split('T')[0]
   const { error } = await supabase
@@ -121,5 +130,9 @@ export function useLinks() {
     return () => { mounted = false }
   }, [])
 
-  return { links, loading, error }
+  function removeLink(id) {
+    setLinks(prev => prev.filter(l => l.id !== id))
+  }
+
+  return { links, loading, error, removeLink }
 }

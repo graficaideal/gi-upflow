@@ -1,7 +1,19 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { useLinks } from '../hooks/useLinks'
+import { useLinks, deleteLink } from '../hooks/useLinks'
+import DeleteLinkModal from '../components/DeleteLinkModal'
 import './Dashboard.css'
+
+function TrashIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="15" height="15">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+      <path d="M10 11v6M14 11v6" />
+      <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+    </svg>
+  )
+}
 
 const STATUS_MAP = {
   pending:   { label: 'Pendente',  cls: 'badge-pending' },
@@ -24,9 +36,16 @@ function StatCard({ label, value, highlight }) {
 }
 
 export default function Dashboard() {
-  const { links, loading } = useLinks()
+  const { links, loading, removeLink } = useLinks()
   const [statusFilter, setStatusFilter] = useState('all')
   const [vendorFilter, setVendorFilter] = useState('all')
+  const [deletingLink, setDeletingLink] = useState(null)
+
+  async function handleDeleteConfirm(id) {
+    await deleteLink(id)
+    removeLink(id)
+    setDeletingLink(null)
+  }
 
   const vendors = useMemo(() => {
     const seen = new Set()
@@ -126,7 +145,19 @@ export default function Dashboard() {
                       <td>{formatDate(link.created_at)}</td>
                       <td>{formatDate(link.expires_at)}</td>
                       <td><span className={`status-badge ${s.cls}`}>{s.label}</span></td>
-                      <td><Link to={`/links/${link.id}`} className="btn-detail">Ver detalhe</Link></td>
+                      <td>
+                        <div className="td-actions">
+                          <Link to={`/links/${link.id}`} className="btn-detail">Ver detalhe</Link>
+                          <button
+                            className="btn-icon btn-icon--danger"
+                            type="button"
+                            onClick={() => setDeletingLink(link)}
+                            aria-label="Apagar link"
+                          >
+                            <TrashIcon />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   )
                 })}
@@ -151,13 +182,31 @@ export default function Dashboard() {
                   </div>
                   <div className="link-card-bottom">
                     <span className="link-card-date">Prazo: {formatDate(link.expires_at)}</span>
-                    <Link to={`/links/${link.id}`} className="btn-detail">Ver detalhe</Link>
+                    <div className="td-actions">
+                      <button
+                        className="btn-icon btn-icon--danger"
+                        type="button"
+                        onClick={() => setDeletingLink(link)}
+                        aria-label="Apagar link"
+                      >
+                        <TrashIcon />
+                      </button>
+                      <Link to={`/links/${link.id}`} className="btn-detail">Ver detalhe</Link>
+                    </div>
                   </div>
                 </div>
               )
             })}
           </div>
         </>
+      )}
+
+      {deletingLink && (
+        <DeleteLinkModal
+          link={deletingLink}
+          onConfirm={handleDeleteConfirm}
+          onClose={() => setDeletingLink(null)}
+        />
       )}
 
       <Link to="/links/create" className="fab" aria-label="Criar novo link">

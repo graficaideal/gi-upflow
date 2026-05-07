@@ -186,6 +186,44 @@
 }
 
 .btn-secondary:hover { background: var(--color-border); }
+.btn-secondary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── Icon button ──────────────────────────────────────────────────────────── */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  flex-shrink: 0;
+}
+
+.btn-icon:hover { background: var(--color-border); }
+
+.btn-icon--danger:hover {
+  background: rgba(234, 67, 53, 0.1);
+  color: #c0392b;
+  border-color: rgba(234, 67, 53, 0.3);
+}
+
+:root.dark .btn-icon--danger:hover {
+  background: rgba(234, 67, 53, 0.15);
+  color: #e57373;
+  border-color: rgba(229, 115, 115, 0.3);
+}
+
+/* ── Table/card action cell ───────────────────────────────────────────────── */
+.td-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
 /* ── FAB (mobile only) ────────────────────────────────────────────────────── */
 .fab { display: none; }
