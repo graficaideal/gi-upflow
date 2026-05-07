@@ -58,6 +58,7 @@
 .pin-dots {
   display: flex;
   gap: 12px;
+  min-height: 14px;
 }
 
 .pin-dot {
