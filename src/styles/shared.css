@@ -16,8 +16,10 @@
   gap: 6px;
 }
 
-.stat-card--highlight      { border-color: var(--color-primary); }
-.stat-card--highlight-blue { border-color: #4285f4; }
+.stat-card--highlight       { border-color: var(--color-primary); }
+.stat-card--highlight-blue  { border-color: #4285f4; }
+.stat-card--highlight-green { border-color: #2d8c48; }
+.stat-card--highlight-red   { border-color: #c0392b; }
 
 .stat-value {
   font-size: 32px;
@@ -26,10 +28,14 @@
   line-height: 1;
 }
 
-.stat-card--highlight .stat-value      { color: var(--color-primary); }
-.stat-card--highlight-blue .stat-value { color: #2563c9; }
+.stat-card--highlight .stat-value       { color: var(--color-primary); }
+.stat-card--highlight-blue .stat-value  { color: #2563c9; }
+.stat-card--highlight-green .stat-value { color: #2d8c48; }
+.stat-card--highlight-red .stat-value   { color: #c0392b; }
 
-:root.dark .stat-card--highlight-blue .stat-value { color: #6ea8fe; }
+:root.dark .stat-card--highlight-blue .stat-value  { color: #6ea8fe; }
+:root.dark .stat-card--highlight-green .stat-value { color: #5ec97a; }
+:root.dark .stat-card--highlight-red .stat-value   { color: #e57373; }
 
 .stat-label {
   font-size: 13px;

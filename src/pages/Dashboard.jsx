@@ -32,8 +32,12 @@ function formatDateTime(str) {
   return new Date(str).toLocaleString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
-function StatCard({ label, value, highlight, blue }) {
-  const mod = highlight ? ' stat-card--highlight' : blue ? ' stat-card--highlight-blue' : ''
+function StatCard({ label, value, highlight, blue, green, red }) {
+  const mod = highlight ? ' stat-card--highlight'
+    : blue  ? ' stat-card--highlight-blue'
+    : green ? ' stat-card--highlight-green'
+    : red   ? ' stat-card--highlight-red'
+    : ''
   return (
     <div className={`stat-card${mod}`}>
       <span className="stat-value">{value}</span>
@@ -104,8 +108,8 @@ export default function Dashboard() {
         <StatCard label="Total de links"  value={loading ? '—' : stats.total} />
         <StatCard label="Pendentes"       value={loading ? '—' : stats.pending}   highlight />
         <StatCard label="Abertos"         value={loading ? '—' : stats.opened}    blue />
-        <StatCard label="Concluídos"      value={loading ? '—' : stats.completed} />
-        <StatCard label="Expirados"       value={loading ? '—' : stats.expired} />
+        <StatCard label="Concluídos"      value={loading ? '—' : stats.completed} green />
+        <StatCard label="Expirados"       value={loading ? '—' : stats.expired}  red />
       </div>
 
       <div className="dashboard-filters">
