@@ -127,7 +127,7 @@ export default function FormPage() {
 
       <div className="form-body">
         {submitError && <div className="form-submit-error">{submitError}</div>}
-        {step === 0 && <StepCompany {...stepProps} />}
+        {step === 0 && <StepCompany {...stepProps} companyName={link?.company_name} />}
         {step === 1 && <StepContacts {...stepProps} />}
         {step === 2 && <StepAuth {...stepProps} />}
         {step === 3 && <StepRGPD {...stepProps} onSubmit={handleSubmit} submitting={submitting} />}

@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { formatPhone } from '../../utils/phone'
 
-export default function StepCompany({ formData, onNext }) {
+export default function StepCompany({ formData, onNext, companyName }) {
   const [contactError, setContactError] = useState(null)
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     defaultValues: {
-      company_name:  formData.company_name  ?? '',
+      company_name:  formData.company_name  ?? companyName ?? '',
       nif:           formData.nif           ?? '',
       morada:        formData.morada        ?? '',
       codigo_postal: formData.codigo_postal ?? '',
