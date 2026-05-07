@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
+function formatPhone(raw) {
+  const digits = raw.replace(/\D/g, '').slice(0, 9)
+  if (digits.length <= 3) return digits
+  if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`
+  return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`
+}
+
 const DEPARTMENTS = [
   { key: 'compras',    label: 'Compras' },
   { key: 'financeiro', label: 'Financeiro' },
@@ -10,7 +17,7 @@ const DEPARTMENTS = [
 export default function StepContacts({ formData, onNext, onBack }) {
   const [crossErrors, setCrossErrors] = useState({})
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     defaultValues: Object.fromEntries(
       DEPARTMENTS.flatMap(({ key }) => [
         [`${key}_nome`,      formData[`${key}_nome`]      ?? ''],
@@ -82,11 +89,19 @@ export default function StepContacts({ formData, onNext, onBack }) {
             <div className="fg-row">
               <div className="fg">
                 <label>Telefone</label>
-                <input {...register(`${key}_telefone`)} />
+                <input
+                  {...register(`${key}_telefone`)}
+                  onChange={e => setValue(`${key}_telefone`, formatPhone(e.target.value))}
+                  placeholder="XXX XXX XXX"
+                />
               </div>
               <div className="fg">
                 <label>Telemóvel</label>
-                <input {...register(`${key}_telemovel`)} />
+                <input
+                  {...register(`${key}_telemovel`)}
+                  onChange={e => setValue(`${key}_telemovel`, formatPhone(e.target.value))}
+                  placeholder="XXX XXX XXX"
+                />
               </div>
             </div>
 

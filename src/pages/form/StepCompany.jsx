@@ -1,9 +1,16 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
+function formatPhone(raw) {
+  const digits = raw.replace(/\D/g, '').slice(0, 9)
+  if (digits.length <= 3) return digits
+  if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`
+  return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`
+}
+
 export default function StepCompany({ formData, onNext }) {
   const [contactError, setContactError] = useState(null)
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     defaultValues: {
       company_name:  formData.company_name  ?? '',
       nif:           formData.nif           ?? '',
@@ -90,11 +97,19 @@ export default function StepCompany({ formData, onNext }) {
         <div className="fg-row">
           <div className="fg">
             <label>Telefone</label>
-            <input {...register('telefone')} />
+            <input
+              {...register('telefone')}
+              onChange={e => setValue('telefone', formatPhone(e.target.value))}
+              placeholder="XXX XXX XXX"
+            />
           </div>
           <div className="fg">
             <label>Telemóvel</label>
-            <input {...register('telemovel')} />
+            <input
+              {...register('telemovel')}
+              onChange={e => setValue('telemovel', formatPhone(e.target.value))}
+              placeholder="XXX XXX XXX"
+            />
           </div>
         </div>
 
