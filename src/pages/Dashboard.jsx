@@ -38,7 +38,12 @@ function StatCard({ label, value, highlight }) {
 export default function Dashboard() {
   const { links, loading, removeLink } = useLinks()
   const [statusFilter, setStatusFilter] = useState('all')
-  const [vendorFilter, setVendorFilter] = useState('all')
+  const [vendorFilter, setVendorFilter] = useState(() => {
+    try {
+      const stored = localStorage.getItem('upflow-active-vendor')
+      return stored ? (JSON.parse(stored)?.name ?? 'all') : 'all'
+    } catch { return 'all' }
+  })
   const [deletingLink, setDeletingLink] = useState(null)
   const [hideCompleted, setHideCompleted] = useState(
     () => localStorage.getItem('upflow-hide-completed') === 'true'
@@ -109,7 +114,17 @@ export default function Dashboard() {
         <select
           className="filter-select"
           value={vendorFilter}
-          onChange={e => setVendorFilter(e.target.value)}
+          onChange={e => {
+            const name = e.target.value
+            setVendorFilter(name)
+            if (name === 'all') {
+              localStorage.removeItem('upflow-active-vendor')
+            } else {
+              const link = links.find(l => l.vendor_name === name)
+              const entry = link ? { id: link.vendor_id, name } : { name }
+              localStorage.setItem('upflow-active-vendor', JSON.stringify(entry))
+            }
+          }}
         >
           <option value="all">Todos os vendedores</option>
           {vendors.map(v => (

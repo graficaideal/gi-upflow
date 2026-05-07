@@ -1,7 +1,17 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { getVendors } from '../hooks/useLinks'
 import './Login.css'
+
+const VENDOR_KEY = 'upflow-active-vendor'
+
+function readStoredVendorId() {
+  try {
+    const stored = localStorage.getItem(VENDOR_KEY)
+    return stored ? (JSON.parse(stored)?.id ?? '') : ''
+  } catch { return '' }
+}
 
 function BackspaceIcon() {
   return (
@@ -19,10 +29,25 @@ export default function Login() {
   const [pin, setPin] = useState('')
   const [error, setError] = useState('')
   const [shake, setShake] = useState(false)
+  const [vendors, setVendors] = useState([])
+  const [selectedVendorId, setSelectedVendorId] = useState(readStoredVendorId)
   const inputRef = useRef(null)
 
   useEffect(() => {
     inputRef.current?.focus()
+    getVendors().then(list => {
+      setVendors(list)
+      // Fallback: if id init found nothing, try matching by stored name
+      setSelectedVendorId(prev => {
+        if (prev) return prev
+        try {
+          const stored = localStorage.getItem(VENDOR_KEY)
+          if (!stored) return ''
+          const name = JSON.parse(stored)?.name
+          return list.find(v => v.name === name)?.id ?? ''
+        } catch { return '' }
+      })
+    }).catch(() => {})
   }, [])
 
   function addDigit(digit) {
@@ -41,6 +66,12 @@ export default function Login() {
       setShake(true)
       setTimeout(() => { setShake(false); setPin('') }, 600)
     } else {
+      const vendor = vendors.find(v => v.id === selectedVendorId)
+      if (vendor) {
+        localStorage.setItem(VENDOR_KEY, JSON.stringify({ id: vendor.id, name: vendor.name }))
+      } else {
+        localStorage.removeItem(VENDOR_KEY)
+      }
       navigate('/dashboard')
     }
   }
@@ -61,6 +92,18 @@ export default function Login() {
           <span className="login-brand-name">UpFlow</span>
           <span className="login-brand-sub">Portal de atualização de dados de clientes</span>
         </div>
+
+        <select
+          className="login-vendor-select"
+          value={selectedVendorId}
+          onChange={e => setSelectedVendorId(e.target.value)}
+          onClick={e => e.stopPropagation()}
+        >
+          <option value="">— Acesso Geral —</option>
+          {vendors.map(v => (
+            <option key={v.id} value={v.id}>{v.name}</option>
+          ))}
+        </select>
 
         <input
           ref={inputRef}
