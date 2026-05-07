@@ -47,14 +47,16 @@ export default function CreateLink() {
   const formUrl = token ? `${window.location.origin}/form/${token}` : null
 
   useEffect(() => {
-    getVendors().then(list => {
-      setVendors(list)
-      try {
-        const id = JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id
-        if (id) setValue('vendor_id', id)
-      } catch {}
-    }).catch(() => {})
+    getVendors().then(setVendors).catch(() => {})
   }, [])
+
+  useEffect(() => {
+    if (vendors.length === 0) return
+    try {
+      const id = JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id
+      if (id) setValue('vendor_id', id)
+    } catch {}
+  }, [vendors])
 
   async function onSubmit({ vendor_id, client_name, company_name, expires_at }) {
     setSubmitError('')
@@ -97,7 +99,6 @@ export default function CreateLink() {
               id="vendor_id"
               className={`form-input${errors.vendor_id ? ' error' : ''}`}
               {...register('vendor_id', { required: 'Campo obrigatório' })}
-              defaultValue=""
             >
               <option value="" disabled>Selecionar vendedor…</option>
               {vendors.map(v => (
