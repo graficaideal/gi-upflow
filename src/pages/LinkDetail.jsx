@@ -187,7 +187,34 @@ export default function LinkDetail() {
             </div>
           </div>
 
-          {/* Card 3 — Consentimento RGPD */}
+          {/* Card 3 — Faturação */}
+          <div className="detail-card">
+            <h4 className="sub-card-title">Faturação</h4>
+            <div className="auth-list">
+              <div className="auth-row">
+                <span className="auth-label">Email de faturação</span>
+                <span className="auth-value">
+                  {sub.billing_same_email ? 'Mesmo do Dep. Financeiro' : (sub.billing_email || '—')}
+                </span>
+              </div>
+              <div className="auth-row">
+                <span className="auth-label">Modo de envio</span>
+                <span className="auth-value">
+                  {sub.billing_mode === 'eletronico' ? 'Eletrónico'
+                    : sub.billing_mode === 'papel' ? 'Papel'
+                    : '—'}
+                </span>
+              </div>
+              {sub.billing_notes && (
+                <div className="auth-row">
+                  <span className="auth-label">Notas</span>
+                  <span className="auth-value">{sub.billing_notes}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Card 4 — Consentimento RGPD */}
           <div className="detail-card">
             <h4 className="sub-card-title">Consentimento RGPD</h4>
             <div className="auth-list">
@@ -208,7 +235,7 @@ export default function LinkDetail() {
             </div>
           </div>
 
-          {/* Card 4 — Autorizações de Imagem */}
+          {/* Card 5 — Autorizações de Imagem */}
           {sub.authorizations.length > 0 && (
             <div className="detail-card">
               <h4 className="sub-card-title">Autorizações de Imagem</h4>

@@ -273,6 +273,39 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+/* ── Billing sub-section ────────────────────────────────────────────────────── */
+.billing-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.billing-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-text-muted);
+  margin-bottom: 14px;
+}
+
+.fg textarea {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+  font-family: var(--font-base);
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.fg textarea:focus { border-color: var(--color-primary); }
+
 /* ── Auth buttons ──────────────────────────────────────────────────────────── */
 .auth-question {
   margin-bottom: 20px;

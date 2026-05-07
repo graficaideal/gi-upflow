@@ -8,7 +8,7 @@ export async function submitForm(token, formData) {
     .single()
 
   if (linkError || !link) throw new Error('Link inválido ou inexistente.')
-  if (link.status !== 'pending') throw new Error('Este link já foi utilizado ou expirou.')
+  if (link.status !== 'pending' && link.status !== 'opened') throw new Error('Este link já foi utilizado ou expirou.')
 
   const today = new Date().toISOString().split('T')[0]
   if (link.expires_at < today) throw new Error('Este link expirou.')
@@ -22,10 +22,14 @@ export async function submitForm(token, formData) {
       morada:        formData.morada,
       codigo_postal: formData.codigo_postal,
       localidade:    formData.localidade,
-      telefone:      formData.telefone   || null,
-      telemovel:     formData.telemovel  || null,
-      email:         formData.email      || null,
-      site:          formData.site       || null,
+      telefone:           formData.telefone           || null,
+      telemovel:          formData.telemovel          || null,
+      email:              formData.email              || null,
+      site:               formData.site               || null,
+      billing_same_email: formData.billing_same_email ?? null,
+      billing_email:      formData.billing_email      || null,
+      billing_mode:       formData.billing_mode       || null,
+      billing_notes:      formData.billing_notes      || null,
     })
     .select('id')
     .single()

@@ -10,16 +10,26 @@ const DEPARTMENTS = [
 
 export default function StepContacts({ formData, onNext, onBack }) {
   const [crossErrors, setCrossErrors] = useState({})
+  const [billingSameEmail, setBillingSameEmail] = useState(
+    formData.billing_same_email ?? null
+  )
+  const [billingMode, setBillingMode] = useState(
+    formData.billing_mode ?? null
+  )
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({
-    defaultValues: Object.fromEntries(
-      DEPARTMENTS.flatMap(({ key }) => [
-        [`${key}_nome`,      formData[`${key}_nome`]      ?? ''],
-        [`${key}_email`,     formData[`${key}_email`]     ?? ''],
-        [`${key}_telefone`,  formData[`${key}_telefone`]  ?? ''],
-        [`${key}_telemovel`, formData[`${key}_telemovel`] ?? ''],
-      ])
-    ),
+    defaultValues: {
+      ...Object.fromEntries(
+        DEPARTMENTS.flatMap(({ key }) => [
+          [`${key}_nome`,      formData[`${key}_nome`]      ?? ''],
+          [`${key}_email`,     formData[`${key}_email`]     ?? ''],
+          [`${key}_telefone`,  formData[`${key}_telefone`]  ?? ''],
+          [`${key}_telemovel`, formData[`${key}_telemovel`] ?? ''],
+        ])
+      ),
+      billing_email: formData.billing_email ?? '',
+      billing_notes: formData.billing_notes ?? '',
+    },
   })
 
   function onSubmit(data) {
@@ -38,10 +48,31 @@ export default function StepContacts({ formData, onNext, onBack }) {
       }
     })
 
+    if (billingSameEmail === null) {
+      newErrors['billing_same_email'] = 'Por favor indique se utiliza o mesmo email de faturação'
+    }
+    if (!billingMode) {
+      newErrors['billing_mode'] = 'Por favor selecione o modo de envio de faturas'
+    }
+    if (billingSameEmail === false) {
+      const email = data.billing_email?.trim()
+      if (!email) {
+        newErrors['billing_email'] = 'Campo obrigatório'
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        newErrors['billing_email'] = 'Email inválido'
+      }
+    }
+
     setCrossErrors(newErrors)
     if (Object.keys(newErrors).length > 0) return
 
-    onNext(data)
+    onNext({
+      ...data,
+      billing_same_email: billingSameEmail,
+      billing_email: billingSameEmail ? null : (data.billing_email || null),
+      billing_mode:  billingMode,
+      billing_notes: data.billing_notes || null,
+    })
   }
 
   return (
@@ -101,6 +132,81 @@ export default function StepContacts({ formData, onNext, onBack }) {
 
             {crossErrors[`${key}_contact`] && (
               <span className="fg-error">{crossErrors[`${key}_contact`]}</span>
+            )}
+
+            {key === 'financeiro' && (
+              <div className="billing-section">
+                <p className="billing-section-title">Faturação</p>
+
+                <div className="fg">
+                  <label>Utiliza o mesmo email do Dep. Financeiro?</label>
+                  <div className="auth-buttons">
+                    <button
+                      type="button"
+                      className={`auth-btn ${billingSameEmail === true ? 'selected-sim' : ''}`}
+                      onClick={() => setBillingSameEmail(true)}
+                    >
+                      Sim
+                    </button>
+                    <button
+                      type="button"
+                      className={`auth-btn ${billingSameEmail === false ? 'selected-nao' : ''}`}
+                      onClick={() => setBillingSameEmail(false)}
+                    >
+                      Não
+                    </button>
+                  </div>
+                  {crossErrors['billing_same_email'] && (
+                    <span className="fg-error">{crossErrors['billing_same_email']}</span>
+                  )}
+                </div>
+
+                {billingSameEmail === false && (
+                  <div className="fg">
+                    <label>Email de faturação *</label>
+                    <input
+                      type="email"
+                      className={crossErrors['billing_email'] ? 'input-error' : ''}
+                      {...register('billing_email')}
+                    />
+                    {crossErrors['billing_email'] && (
+                      <span className="fg-error">{crossErrors['billing_email']}</span>
+                    )}
+                  </div>
+                )}
+
+                <div className="fg">
+                  <label>Modo de envio de faturas *</label>
+                  <div className="auth-buttons">
+                    <button
+                      type="button"
+                      className={`auth-btn ${billingMode === 'eletronico' ? 'selected-sim' : ''}`}
+                      onClick={() => setBillingMode('eletronico')}
+                    >
+                      Eletrónico
+                    </button>
+                    <button
+                      type="button"
+                      className={`auth-btn ${billingMode === 'papel' ? 'selected-sim' : ''}`}
+                      onClick={() => setBillingMode('papel')}
+                    >
+                      Papel
+                    </button>
+                  </div>
+                  {crossErrors['billing_mode'] && (
+                    <span className="fg-error">{crossErrors['billing_mode']}</span>
+                  )}
+                </div>
+
+                <div className="fg">
+                  <label>Notas de faturação</label>
+                  <textarea
+                    {...register('billing_notes')}
+                    rows={3}
+                    placeholder="Observações opcionais…"
+                  />
+                </div>
+              </div>
             )}
           </div>
         ))}
