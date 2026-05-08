@@ -152,13 +152,13 @@ export default function LinkDetail() {
             <div className="sub-fields">
               <Field label="Nome da Empresa"  value={sub.company_name} />
               <Field label="NIF"              value={sub.nif} />
-              <Field label="Morada"           value={sub.morada} />
+              <Field label="Morada"           value={sub.address} />
               <Field label="Código Postal"    value={sub.codigo_postal} />
-              <Field label="Localidade"       value={sub.localidade} />
-              <Field label="Telefone"         value={sub.telefone} />
-              <Field label="Telemóvel"        value={sub.telemovel} />
+              <Field label="Localidade"       value={sub.city} />
+              <Field label="Telefone"         value={sub.phone} />
+              <Field label="Telemóvel"        value={sub.mobile} />
               <Field label="Email"            value={sub.email} />
-              <Field label="Site"             value={sub.site} />
+              <Field label="Site"             value={sub.website} />
             </div>
           </div>
 
@@ -173,10 +173,10 @@ export default function LinkDetail() {
                     <p className="contact-dept">{DEPT_LABELS[dept]}</p>
                     {c ? (
                       <>
-                        <Field label="Nome"      value={c.nome} />
+                        <Field label="Nome"      value={c.name} />
                         <Field label="Email"     value={c.email} />
-                        <Field label="Telefone"  value={c.telefone} />
-                        <Field label="Telemóvel" value={c.telemovel} />
+                        <Field label="Telefone"  value={c.phone} />
+                        <Field label="Telemóvel" value={c.mobile} />
                       </>
                     ) : (
                       <p className="dept-empty">Sem dados registados</p>
@@ -266,11 +266,10 @@ export default function LinkDetail() {
 }
 
 function Field({ label, value }) {
-  if (!value) return null
   return (
     <div className="sub-field">
       <span className="sub-field-label">{label}</span>
-      <span className="sub-field-value">{value}</span>
+      <span className="sub-field-value">{value || '—'}</span>
     </div>
   )
 }
