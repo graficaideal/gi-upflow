@@ -6,7 +6,10 @@ export async function getAuthorizations() {
     .select('id, company_name')
     .eq('status', 'completed')
 
-  if (linksError) throw linksError
+  if (linksError) {
+    console.error('[useAuthorizations] upflow_links query failed:', linksError)
+    throw linksError
+  }
   if (!links?.length) return []
 
   const linkIds = links.map(l => l.id)
@@ -16,7 +19,10 @@ export async function getAuthorizations() {
     .select('id, link_id, company_name, created_at')
     .in('link_id', linkIds)
 
-  if (subsError) throw subsError
+  if (subsError) {
+    console.error('[useAuthorizations] upflow_submissions query failed:', subsError)
+    throw subsError
+  }
   if (!submissions?.length) return []
 
   const submissionIds = submissions.map(s => s.id)
@@ -26,7 +32,10 @@ export async function getAuthorizations() {
     .select('submission_id, type, authorized')
     .in('submission_id', submissionIds)
 
-  if (authError) throw authError
+  if (authError) {
+    console.error('[useAuthorizations] upflow_authorizations query failed:', authError)
+    throw authError
+  }
 
   const authMap = {}
   for (const a of authorizations ?? []) {
