@@ -17,7 +17,9 @@
       "Bash(git -C C:/Users/sergiohenriques/GitHub/gi-upflow status)",
       "Bash(git -C C:/Users/sergiohenriques/GitHub/gi-upflow add vercel.json)",
       "Bash(git -C C:/Users/sergiohenriques/GitHub/gi-upflow commit -m ' *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\sergiohenriques\\\\GitHub\\\\gi-upflow\" -Force)",
+      "Bash(Select-Object Name)"
     ]
   }
 }
