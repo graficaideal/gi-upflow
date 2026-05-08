@@ -16,7 +16,7 @@ export async function getAuthorizations() {
 
   const { data: submissions, error: subsError } = await supabase
     .from('upflow_submissions')
-    .select('id, link_id, company_name, created_at')
+    .select('id, link_id, company_name, submitted_at')
     .in('link_id', linkIds)
 
   if (subsError) {
@@ -50,7 +50,7 @@ export async function getAuthorizations() {
       const auths = authMap[sub.id] ?? {}
       return {
         company_name: sub.company_name || linkMap[sub.link_id]?.company_name || '—',
-        submitted_at: sub.created_at,
+        submitted_at: sub.submitted_at,
         fotos:        auths.fotos       ?? false,
         videos:       auths.videos      ?? false,
         publicacoes:  auths.publicacoes ?? false,
