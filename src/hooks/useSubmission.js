@@ -20,7 +20,7 @@ export async function submitForm(token, formData) {
       company_name:       formData.company_name,
       nif:                formData.nif,
       address:            formData.morada          || null,
-      postal_code:        formData.codigo_postal   || null,
+      codigo_postal:      formData.codigo_postal   || null,
       city:               formData.localidade      || null,
       phone:              formData.telefone        || null,
       mobile:             formData.telemovel       || null,
