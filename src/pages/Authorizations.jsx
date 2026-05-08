@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
+import * as XLSX from 'xlsx'
 import { getAuthorizations } from '../hooks/useAuthorizations'
 import './Authorizations.css'
 
@@ -70,23 +71,18 @@ export default function Authorizations() {
     })
   }, [data, search, filterMode, toggleFotos, toggleVideos, togglePublicacoes])
 
-  function exportCSV() {
-    const header = ['Empresa', 'Fotos', 'Vídeos', 'Publicações', 'Data de Submissão']
-    const rows = filtered.map(r => [
-      r.company_name,
-      r.fotos       ? 'Sim' : 'Não',
-      r.videos      ? 'Sim' : 'Não',
-      r.publicacoes ? 'Sim' : 'Não',
-      formatDate(r.submitted_at),
-    ])
-    const csv = [header, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n')
-    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'autorizacoes-gi.csv'
-    a.click()
-    URL.revokeObjectURL(url)
+  function exportXLS() {
+    const rows = filtered.map(r => ({
+      'Empresa':              r.company_name,
+      'Fotos':                r.fotos       ? 'Sim' : 'Não',
+      'Vídeos':               r.videos      ? 'Sim' : 'Não',
+      'Publicações':          r.publicacoes ? 'Sim' : 'Não',
+      'Data de Submissão':    formatDate(r.submitted_at),
+    }))
+    const ws = XLSX.utils.json_to_sheet(rows)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Autorizações')
+    XLSX.writeFile(wb, 'autorizacoes-gi.xlsx')
   }
 
   return (
@@ -136,8 +132,8 @@ export default function Authorizations() {
             onClick={() => setTogglePublicacoes(p => !p)}
           >Publicações</button>
         </div>
-        <button type="button" className="btn-secondary auth-export-btn" onClick={exportCSV}>
-          Exportar CSV
+        <button type="button" className="btn-secondary auth-export-btn" onClick={exportXLS}>
+          Exportar Excel
         </button>
       </div>
 
