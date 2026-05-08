@@ -43,7 +43,7 @@ export async function submitForm(token, formData) {
     .map(dept => ({
       submission_id: sid,
       department:    dept,
-      nome:          formData[`${dept}_nome`],
+      name:          formData[`${dept}_nome`],
       email:         formData[`${dept}_email`],
       phone:         formData[`${dept}_telefone`]  || null,
       mobile:        formData[`${dept}_telemovel`] || null,
