@@ -74,3 +74,4 @@ export async function submitForm(token, formData) {
     .eq('id', link.id)
   if (updateError) throw updateError
 }
+
