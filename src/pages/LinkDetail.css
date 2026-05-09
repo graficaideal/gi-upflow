@@ -128,6 +128,26 @@
   font-size: 13px;
 }
 
+.btn-pdf-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: var(--color-sidebar);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-base);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.btn-pdf-detail:hover { opacity: 0.88; }
+.btn-pdf-detail:disabled { opacity: 0.55; cursor: not-allowed; }
+
 /* ── Submission section ────────────────────────────────────────────────────── */
 .submission-title {
   font-size: 18px;

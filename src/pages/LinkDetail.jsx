@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { jsPDF } from 'jspdf'
+import { useParams, useNavigate } from 'react-router-dom'
 import { getLinkById } from '../hooks/useLinks'
 import './LinkDetail.css'
 
@@ -33,6 +34,205 @@ function formatDateTime(str) {
   })
 }
 
+function svgToPng() {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = 140
+      canvas.height = 174
+      canvas.getContext('2d').drawImage(img, 0, 0, 140, 174)
+      resolve(canvas.toDataURL('image/png'))
+    }
+    img.onerror = reject
+    img.src = '/logo.svg'
+  })
+}
+
+async function downloadPDF(link) {
+  const logoPng = await svgToPng()
+  const sub = link.submission
+
+  const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' })
+  const pageW = 210
+  const pageH = 297
+  const margin = 15
+  const contentW = pageW - 2 * margin
+  const footerH = 12
+
+  const darkR = 51,   darkG = 63,  darkB = 72   // #333F48
+  const yelR  = 224,  yelG  = 203, yelB  = 75   // #e0cb4b
+
+  // ── Header ──────────────────────────────────────────────
+  const headerH = 42
+  doc.setFillColor(darkR, darkG, darkB)
+  doc.rect(0, 0, pageW, headerH, 'F')
+  doc.setFillColor(yelR, yelG, yelB)
+  doc.rect(0, 0, pageW, 5, 'F')
+
+  const logoW = 20
+  const logoH = logoW * (174 / 140)
+  const logoY = 5 + (headerH - 5 - logoH) / 2
+  doc.addImage(logoPng, 'PNG', margin, logoY, logoW, logoH)
+
+  const titleX = margin + logoW + 6
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(13)
+  doc.setTextColor(255, 255, 255)
+  doc.text(`Ficha de Cliente — ${link.commercial_name}`, titleX, logoY + 8)
+
+  const submittedStr = link.submitted_at
+    ? new Date(link.submitted_at).toLocaleString('pt-PT', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+      })
+    : '—'
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(9)
+  doc.setTextColor(190, 195, 200)
+  doc.text(`Submetido em: ${submittedStr}`, titleX, logoY + 17)
+
+  // ── Helpers ──────────────────────────────────────────────
+  let y = headerH + 8
+
+  function checkBreak(needed) {
+    if (y + needed > pageH - footerH - 5) {
+      doc.addPage()
+      y = 15
+    }
+  }
+
+  function addSectionTitle(title) {
+    checkBreak(10)
+    doc.setFillColor(darkR, darkG, darkB)
+    doc.rect(margin, y, contentW, 8, 'F')
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(9.5)
+    doc.setTextColor(255, 255, 255)
+    doc.text(title, margin + 4, y + 5.5)
+    y += 12
+  }
+
+  function addField(label, value) {
+    checkBreak(7)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(8.5)
+    doc.setTextColor(100, 110, 120)
+    doc.text(`${label}:`, margin + 2, y)
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(30, 35, 40)
+    doc.text(value || '—', margin + 58, y)
+    y += 6.5
+  }
+
+  function addSubheading(text) {
+    checkBreak(9)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(9)
+    doc.setTextColor(darkR, darkG, darkB)
+    doc.text(text, margin + 2, y)
+    y += 6.5
+  }
+
+  // ── Secção 1 — Dados da Empresa ─────────────────────────
+  addSectionTitle('1. Dados da Empresa')
+  addField('Designação Comercial', link.commercial_name)
+  addField('Designação Fiscal', sub.fiscal_name)
+  addField('NIF', sub.nif)
+  addField('Morada', sub.address)
+  addField('Código Postal', sub.codigo_postal)
+  addField('Localidade', sub.city)
+  addField('Telefone', sub.phone)
+  addField('Telemóvel', sub.mobile)
+  addField('Email', sub.email)
+  addField('Site', sub.website)
+  y += 4
+
+  // ── Secção 2 — Contactos por Departamento ───────────────
+  addSectionTitle('2. Contactos por Departamento')
+  for (const dept of DEPT_ORDER) {
+    const c = sub.contacts.find(x => x.department === dept)
+    addSubheading(DEPT_LABELS[dept])
+    if (c) {
+      addField('Nome', c.name)
+      addField('Email', c.email)
+      addField('Telefone', c.phone)
+      addField('Telemóvel', c.mobile)
+    } else {
+      checkBreak(6)
+      doc.setFont('helvetica', 'italic')
+      doc.setFontSize(8.5)
+      doc.setTextColor(150, 155, 160)
+      doc.text('Sem dados registados', margin + 2, y)
+      y += 6
+    }
+    y += 3
+  }
+  y += 1
+
+  // ── Secção 3 — Faturação ─────────────────────────────────
+  addSectionTitle('3. Faturação')
+  addField(
+    'Email de faturação',
+    sub.billing_same_email ? 'Mesmo do Dep. Financeiro' : (sub.billing_email || '—'),
+  )
+  addField(
+    'Modo de envio',
+    sub.billing_mode === 'eletronico' ? 'Eletrónico'
+      : sub.billing_mode === 'papel' ? 'Papel' : '—',
+  )
+  if (sub.billing_notes) addField('Observações', sub.billing_notes)
+  y += 4
+
+  // ── Secção 4 — Consentimento RGPD ────────────────────────
+  addSectionTitle('4. Consentimento RGPD')
+  addField('Aceite', sub.rgpd_consent ? 'Sim' : 'Não')
+  if (sub.rgpd_consent?.accepted_at) {
+    addField(
+      'Data e hora de aceitação',
+      new Date(sub.rgpd_consent.accepted_at).toLocaleString('pt-PT', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+      }),
+    )
+  }
+  y += 4
+
+  // ── Secção 5 — Autorizações de Imagem ────────────────────
+  addSectionTitle('5. Autorizações de Imagem')
+  for (const type of AUTH_ORDER) {
+    const a = sub.authorizations.find(x => x.type === type)
+    addField(AUTH_LABELS[type] || type, a ? (a.authorized ? 'Sim' : 'Não') : '—')
+  }
+
+  // ── Rodapé em todas as páginas ───────────────────────────
+  const total = doc.getNumberOfPages()
+  for (let i = 1; i <= total; i++) {
+    doc.setPage(i)
+    doc.setFillColor(yelR, yelG, yelB)
+    doc.rect(0, pageH - footerH, pageW, footerH, 'F')
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(7.5)
+    doc.setTextColor(darkR, darkG, darkB)
+    doc.text(
+      'Gráfica Ideal de Águeda — Indústrias Gráficas, SA | geral@graficaideal.pt | www.graficaideal.pt',
+      pageW / 2,
+      pageH - footerH + 7.5,
+      { align: 'center' },
+    )
+  }
+
+  // ── Nome do ficheiro ─────────────────────────────────────
+  const safeName = (link.commercial_name || 'cliente')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '')
+  const now = new Date()
+  const dd = String(now.getDate()).padStart(2, '0')
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  const yyyy = now.getFullYear()
+  doc.save(`ficha-${safeName}-${dd}-${mm}-${yyyy}.pdf`)
+}
+
 function CopyIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -46,6 +246,17 @@ function CheckIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  )
+}
+
+function PdfIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="12" y1="18" x2="12" y2="12"/>
+      <polyline points="9 15 12 18 15 15"/>
     </svg>
   )
 }
@@ -84,12 +295,18 @@ export default function LinkDetail() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [copied, setCopied] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
 
   useEffect(() => {
     getLinkById(id)
       .then(data => { setLink(data); setLoading(false) })
       .catch(err => { setError(err.message); setLoading(false) })
   }, [id])
+
+  async function handleDownloadPDF() {
+    setPdfLoading(true)
+    try { await downloadPDF(link) } finally { setPdfLoading(false) }
+  }
 
   function copyLink() {
     const url = `${import.meta.env.VITE_APP_URL || window.location.origin}/form/${link.token}`
@@ -167,6 +384,14 @@ export default function LinkDetail() {
             <button className="btn-secondary btn-mail-detail" onClick={() => openMailto(formUrl)}>
               <MailIcon />
               Enviar por Email
+            </button>
+          </div>
+        )}
+        {link.status === 'completed' && sub && (
+          <div className="detail-link-row">
+            <button className="btn-pdf-detail" onClick={handleDownloadPDF} disabled={pdfLoading}>
+              <PdfIcon />
+              {pdfLoading ? 'A gerar…' : 'Descarregar PDF'}
             </button>
           </div>
         )}
