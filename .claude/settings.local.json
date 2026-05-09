@@ -20,7 +20,12 @@
       "Bash(git *)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\sergiohenriques\\\\GitHub\\\\gi-upflow\" -Force)",
       "Bash(Select-Object Name)",
-      "Bash(npm list *)"
+      "Bash(npm list *)",
+      "Bash(node *)",
+      "Bash(where magick *)",
+      "Bash(where inkscape *)",
+      "Bash(where chromium *)",
+      "Bash(where \"chrome\")"
     ]
   }
 }
