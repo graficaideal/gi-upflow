@@ -21,6 +21,33 @@ function CheckIcon() {
   )
 }
 
+function MailIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <polyline points="2,4 12,13 22,4" />
+    </svg>
+  )
+}
+
+function openMailto(formUrl) {
+  const subject = 'Dados Cadastrais — Gráfica Ideal de Águeda'
+  const body = `Exmo(a). Senhor(a),
+
+A Gráfica Ideal de Águeda vem por este meio solicitar o preenchimento/atualização dos vossos dados cadastrais, essenciais para a manutenção de uma relação comercial eficiente e em conformidade com o Regulamento Geral sobre a Proteção de Dados (RGPD).
+
+Para proceder ao preenchimento, basta aceder ao seguinte link:
+
+${formUrl}
+
+O processo é simples, rápido e seguro. Após a submissão, os vossos dados ficarão registados na nossa base de dados e serão utilizados exclusivamente para fins comerciais inerentes à nossa relação.
+
+Caso tenham alguma dúvida, não hesitem em contactar-nos.
+
+Com os melhores cumprimentos,`
+  window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+}
+
 function getMinDate() {
   const d = new Date()
   d.setDate(d.getDate() + 1)
@@ -153,6 +180,10 @@ export default function CreateLink() {
               <button onClick={handleCopy} className={`btn-copy${copied ? ' copied' : ''}`}>
                 {copied ? <CheckIcon /> : <CopyIcon />}
                 {copied ? 'Copiado!' : 'Copiar'}
+              </button>
+              <button onClick={() => openMailto(formUrl)} className="btn-copy">
+                <MailIcon />
+                Enviar por Email
               </button>
             </div>
             <div className="link-result-actions">

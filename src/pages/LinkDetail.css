@@ -120,6 +120,14 @@
 
 .btn-copy-detail:hover { opacity: 0.88; }
 
+.btn-mail-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
 /* ── Submission section ────────────────────────────────────────────────────── */
 .submission-title {
   font-size: 18px;
@@ -253,4 +261,5 @@
   .detail-link-row { flex-direction: column; align-items: stretch; }
 
   .btn-copy-detail { justify-content: center; }
+  .btn-mail-detail { justify-content: center; }
 }
