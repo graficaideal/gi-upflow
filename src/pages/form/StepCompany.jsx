@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { formatPhone } from '../../utils/phone'
 import { formatNif } from '../../utils/nif'
+import { formatPostalCode } from '../../utils/postalCode'
 
 export default function StepCompany({ formData, onNext }) {
   const [contactError, setContactError] = useState(null)
@@ -75,6 +76,7 @@ export default function StepCompany({ formData, onNext }) {
                 required: 'Campo obrigatório',
                 pattern: { value: /^\d{4}-\d{3}$/, message: 'Formato: XXXX-XXX' },
               })}
+              onChange={e => setValue('codigo_postal', formatPostalCode(e.target.value))}
             />
             {errors.codigo_postal && <span className="fg-error">{errors.codigo_postal.message}</span>}
           </div>
