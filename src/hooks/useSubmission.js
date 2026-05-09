@@ -47,6 +47,8 @@ export async function submitForm(token, formData) {
       email:         formData[`${dept}_email`],
       phone:         formData[`${dept}_telefone`]  || null,
       mobile:        formData[`${dept}_telemovel`] || null,
+      cargo:         formData[`${dept}_cargo`]       || null,
+      cargo_outro:   formData[`${dept}_cargo_outro`] || null,
     }))
 
   if (contactRows.length > 0) {

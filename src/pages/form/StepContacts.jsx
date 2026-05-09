@@ -17,14 +17,16 @@ export default function StepContacts({ formData, onNext, onBack }) {
     formData.billing_mode ?? null
   )
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
     defaultValues: {
       ...Object.fromEntries(
         DEPARTMENTS.flatMap(({ key }) => [
-          [`${key}_nome`,      formData[`${key}_nome`]      ?? ''],
-          [`${key}_email`,     formData[`${key}_email`]     ?? ''],
-          [`${key}_telefone`,  formData[`${key}_telefone`]  ?? ''],
-          [`${key}_telemovel`, formData[`${key}_telemovel`] ?? ''],
+          [`${key}_nome`,        formData[`${key}_nome`]        ?? ''],
+          [`${key}_email`,       formData[`${key}_email`]       ?? ''],
+          [`${key}_telefone`,    formData[`${key}_telefone`]    ?? ''],
+          [`${key}_telemovel`,   formData[`${key}_telemovel`]   ?? ''],
+          [`${key}_cargo`,       formData[`${key}_cargo`]       ?? ''],
+          [`${key}_cargo_outro`, formData[`${key}_cargo_outro`] ?? ''],
         ])
       ),
       billing_email: formData.billing_email ?? '',
@@ -45,6 +47,9 @@ export default function StepContacts({ formData, onNext, onBack }) {
       }
       if (!tel && !mob) {
         newErrors[`${key}_contact`] = 'Indique pelo menos um número de telefone ou telemóvel'
+      }
+      if (data[`${key}_cargo`] === 'outro' && !data[`${key}_cargo_outro`]?.trim()) {
+        newErrors[`${key}_cargo_outro`] = 'Campo obrigatório'
       }
     })
 
@@ -110,6 +115,31 @@ export default function StepContacts({ formData, onNext, onBack }) {
                 <span className="fg-error">{errors[`${key}_email`].message}</span>
               )}
             </div>
+
+            <div className="fg">
+              <label>Cargo</label>
+              <select {...register(`${key}_cargo`)}>
+                <option value="">— Selecione —</option>
+                <option value="Administrador">Administrador</option>
+                <option value="Diretor">Diretor</option>
+                <option value="Responsável">Responsável</option>
+                <option value="Técnico">Técnico</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+
+            {watch(`${key}_cargo`) === 'outro' && (
+              <div className="fg">
+                <label>Especifique o cargo *</label>
+                <input
+                  className={crossErrors[`${key}_cargo_outro`] ? 'input-error' : ''}
+                  {...register(`${key}_cargo_outro`)}
+                />
+                {crossErrors[`${key}_cargo_outro`] && (
+                  <span className="fg-error">{crossErrors[`${key}_cargo_outro`]}</span>
+                )}
+              </div>
+            )}
 
             <div className="fg-row">
               <div className="fg">

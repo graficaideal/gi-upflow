@@ -158,6 +158,7 @@ async function downloadPDF(link) {
       addField('Email', c.email)
       addField('Telefone', c.phone)
       addField('Telemóvel', c.mobile)
+      if (c.cargo) addField('Cargo', c.cargo === 'outro' ? (c.cargo_outro || '—') : c.cargo)
     } else {
       checkBreak(6)
       doc.setFont('helvetica', 'italic')
@@ -433,6 +434,9 @@ export default function LinkDetail() {
                         <Field label="Email"     value={c.email} />
                         <Field label="Telefone"  value={c.phone} />
                         <Field label="Telemóvel" value={c.mobile} />
+                        {c.cargo && (
+                          <Field label="Cargo" value={c.cargo === 'outro' ? c.cargo_outro : c.cargo} />
+                        )}
                       </>
                     ) : (
                       <p className="dept-empty">Sem dados registados</p>
