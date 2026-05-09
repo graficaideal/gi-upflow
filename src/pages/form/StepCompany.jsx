@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { formatPhone } from '../../utils/phone'
+import { formatNif } from '../../utils/nif'
 
 export default function StepCompany({ formData, onNext }) {
   const [contactError, setContactError] = useState(null)
@@ -48,8 +49,9 @@ export default function StepCompany({ formData, onNext }) {
             className={errors.nif ? 'input-error' : ''}
             {...register('nif', {
               required: 'Campo obrigatório',
-              pattern: { value: /^\d{9}$/, message: 'O NIF deve ter exactamente 9 dígitos' },
+              validate: v => v.replace(/\s/g, '').length === 9 || 'O NIF deve ter exactamente 9 dígitos',
             })}
+            onChange={e => setValue('nif', formatNif(e.target.value))}
           />
           {errors.nif && <span className="fg-error">{errors.nif.message}</span>}
         </div>
