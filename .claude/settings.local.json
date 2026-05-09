@@ -25,7 +25,9 @@
       "Bash(where magick *)",
       "Bash(where inkscape *)",
       "Bash(where chromium *)",
-      "Bash(where \"chrome\")"
+      "Bash(where \"chrome\")",
+      "Bash(git show *)",
+      "Read(//tmp/**)"
     ]
   }
 }
