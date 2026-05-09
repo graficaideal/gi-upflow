@@ -102,21 +102,6 @@ export default function StepContacts({ formData, onNext, onBack }) {
             </div>
 
             <div className="fg">
-              <label>Email *</label>
-              <input
-                type="email"
-                className={errors[`${key}_email`] ? 'input-error' : ''}
-                {...register(`${key}_email`, {
-                  required: 'Campo obrigatório',
-                  validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email inválido',
-                })}
-              />
-              {errors[`${key}_email`] && (
-                <span className="fg-error">{errors[`${key}_email`].message}</span>
-              )}
-            </div>
-
-            <div className="fg">
               <label>Cargo</label>
               <select {...register(`${key}_cargo`)}>
                 <option value="">— Selecione —</option>
@@ -140,6 +125,21 @@ export default function StepContacts({ formData, onNext, onBack }) {
                 )}
               </div>
             )}
+
+            <div className="fg">
+              <label>Email *</label>
+              <input
+                type="email"
+                className={errors[`${key}_email`] ? 'input-error' : ''}
+                {...register(`${key}_email`, {
+                  required: 'Campo obrigatório',
+                  validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email inválido',
+                })}
+              />
+              {errors[`${key}_email`] && (
+                <span className="fg-error">{errors[`${key}_email`].message}</span>
+              )}
+            </div>
 
             <div className="fg-row">
               <div className="fg">

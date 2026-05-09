@@ -155,10 +155,10 @@ async function downloadPDF(link) {
     addSubheading(DEPT_LABELS[dept])
     if (c) {
       addField('Nome', c.name)
+      if (c.cargo) addField('Cargo', c.cargo === 'outro' ? (c.cargo_outro || '—') : c.cargo)
       addField('Email', c.email)
       addField('Telefone', c.phone)
       addField('Telemóvel', c.mobile)
-      if (c.cargo) addField('Cargo', c.cargo === 'outro' ? (c.cargo_outro || '—') : c.cargo)
     } else {
       checkBreak(6)
       doc.setFont('helvetica', 'italic')
@@ -431,12 +431,12 @@ export default function LinkDetail() {
                     {c ? (
                       <>
                         <Field label="Nome"      value={c.name} />
-                        <Field label="Email"     value={c.email} />
-                        <Field label="Telefone"  value={c.phone} />
-                        <Field label="Telemóvel" value={c.mobile} />
                         {c.cargo && (
                           <Field label="Cargo" value={c.cargo === 'outro' ? c.cargo_outro : c.cargo} />
                         )}
+                        <Field label="Email"     value={c.email} />
+                        <Field label="Telefone"  value={c.phone} />
+                        <Field label="Telemóvel" value={c.mobile} />
                       </>
                     ) : (
                       <p className="dept-empty">Sem dados registados</p>
