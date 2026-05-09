@@ -47,11 +47,6 @@
   line-height: 1.2;
 }
 
-.detail-company {
-  font-size: 14px;
-  color: var(--color-text-muted);
-  margin-top: 4px;
-}
 
 /* ── Meta row ──────────────────────────────────────────────────────────────── */
 .detail-meta {

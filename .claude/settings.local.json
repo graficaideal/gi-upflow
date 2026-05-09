@@ -27,7 +27,9 @@
       "Bash(where chromium *)",
       "Bash(where \"chrome\")",
       "Bash(git show *)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\sergiohenriques\\\\GitHub\\\\gi-upflow\\\\src\" -Recurse -File)",
+      "Bash(Select-Object -ExpandProperty FullName)"
     ]
   }
 }

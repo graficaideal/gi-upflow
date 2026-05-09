@@ -147,9 +147,6 @@
 :root.dark .badge-completed { background: rgba(52, 168, 83, 0.2);   color: #5ec97a; }
 :root.dark .badge-expired   { background: rgba(234, 67, 53, 0.2);   color: #e57373; }
 
-.td-opened-at  { font-size: 11px; color: var(--color-text-muted); margin-top: 3px; }
-.card-opened-at { font-size: 11px; color: var(--color-text-muted); }
-
 /* ── Buttons ──────────────────────────────────────────────────────────────── */
 .btn-detail {
   display: inline-block;
