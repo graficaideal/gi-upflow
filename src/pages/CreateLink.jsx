@@ -61,11 +61,11 @@ export default function CreateLink() {
     }
   }, [vendors])
 
-  async function onSubmit({ vendor_id, client_name, company_name, expires_at }) {
+  async function onSubmit({ vendor_id, commercial_name, expires_at }) {
     setSubmitError('')
     try {
       const vendor = vendors.find(v => v.id === vendor_id)
-      const data = await createLink(client_name, company_name, expires_at, vendor_id, vendor?.name ?? '')
+      const data = await createLink(commercial_name, expires_at, vendor_id, vendor?.name ?? '')
       setToken(data.token)
     } catch {
       setSubmitError('Erro ao criar link. Verifica a ligação e tenta novamente.')
@@ -112,27 +112,15 @@ export default function CreateLink() {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="client_name">Nome do Cliente</label>
+            <label className="form-label" htmlFor="commercial_name">Designação Comercial</label>
             <input
-              id="client_name"
-              className={`form-input${errors.client_name ? ' error' : ''}`}
-              type="text"
-              placeholder="ex: João Silva"
-              {...register('client_name', { required: 'Campo obrigatório' })}
-            />
-            {errors.client_name && <p className="form-error">{errors.client_name.message}</p>}
-          </div>
-
-          <div className="form-group">
-            <label className="form-label" htmlFor="company_name">Empresa</label>
-            <input
-              id="company_name"
-              className={`form-input${errors.company_name ? ' error' : ''}`}
+              id="commercial_name"
+              className={`form-input${errors.commercial_name ? ' error' : ''}`}
               type="text"
               placeholder="ex: Empresa Lda"
-              {...register('company_name', { required: 'Campo obrigatório' })}
+              {...register('commercial_name', { required: 'Campo obrigatório' })}
             />
-            {errors.company_name && <p className="form-error">{errors.company_name.message}</p>}
+            {errors.commercial_name && <p className="form-error">{errors.commercial_name.message}</p>}
           </div>
 
           <div className="form-group">

@@ -24,8 +24,7 @@ export default function DeleteLinkModal({ link, onConfirm, onClose }) {
       <div className="modal-card" onClick={e => e.stopPropagation()}>
         <h2 className="modal-title">Apagar link</h2>
         <div className="modal-link-info">
-          <p className="modal-client">{link.client_name}</p>
-          <p className="modal-company">{link.company_name}</p>
+          <p className="modal-client">{link.commercial_name}</p>
         </div>
         <p className="modal-warning">Esta ação é irreversível</p>
         <p className="modal-code-label">Para confirmar, introduz o código:</p>

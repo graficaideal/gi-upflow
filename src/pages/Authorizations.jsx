@@ -61,7 +61,7 @@ export default function Authorizations() {
 
   const filtered = useMemo(() => {
     return data.filter(row => {
-      if (search && !row.company_name.toLowerCase().includes(search.toLowerCase())) return false
+      if (search && !row.commercial_name.toLowerCase().includes(search.toLowerCase())) return false
       if (filterMode === 'all_authorized' && !(row.fotos && row.videos && row.publicacoes)) return false
       if (filterMode === 'any_not_authorized' && row.fotos && row.videos && row.publicacoes) return false
       if (toggleFotos && !row.fotos) return false
@@ -73,7 +73,7 @@ export default function Authorizations() {
 
   function exportXLS() {
     const rows = filtered.map(r => ({
-      'Empresa':              r.company_name,
+      'Designação Comercial': r.commercial_name,
       'Fotos':                r.fotos       ? 'Sim' : 'Não',
       'Vídeos':               r.videos      ? 'Sim' : 'Não',
       'Publicações':          r.publicacoes ? 'Sim' : 'Não',
@@ -102,7 +102,7 @@ export default function Authorizations() {
         <input
           className="filter-input"
           type="text"
-          placeholder="Pesquisar empresa…"
+          placeholder="Pesquisar designação comercial…"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -146,7 +146,7 @@ export default function Authorizations() {
             <table className="links-table">
               <thead>
                 <tr>
-                  <th>Empresa</th>
+                  <th>Designação Comercial</th>
                   <th>Fotos</th>
                   <th>Vídeos</th>
                   <th>Publicações</th>
@@ -160,7 +160,7 @@ export default function Authorizations() {
                   </tr>
                 ) : filtered.map((row, i) => (
                   <tr key={i}>
-                    <td>{row.company_name}</td>
+                    <td>{row.commercial_name}</td>
                     <td><AuthIcon value={row.fotos} /></td>
                     <td><AuthIcon value={row.videos} /></td>
                     <td><AuthIcon value={row.publicacoes} /></td>
@@ -177,7 +177,7 @@ export default function Authorizations() {
             ) : filtered.map((row, i) => (
               <div key={i} className="link-card">
                 <div className="link-card-top">
-                  <p className="link-card-name">{row.company_name}</p>
+                  <p className="link-card-name">{row.commercial_name}</p>
                   <span className="link-card-date">{formatDate(row.submitted_at)}</span>
                 </div>
                 <div className="auth-card-badges">

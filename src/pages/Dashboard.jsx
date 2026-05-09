@@ -175,8 +175,7 @@ export default function Dashboard() {
             <table className="links-table">
               <thead>
                 <tr>
-                  <th>Cliente</th>
-                  <th>Empresa</th>
+                  <th>Designação Comercial</th>
                   <th>Vendedor</th>
                   <th>Criado em</th>
                   <th>Prazo</th>
@@ -190,8 +189,7 @@ export default function Dashboard() {
                   const s = STATUS_MAP[link.status] ?? { label: link.status, cls: '' }
                   return (
                     <tr key={link.id}>
-                      <td>{link.client_name}</td>
-                      <td>{link.company_name}</td>
+                      <td>{link.commercial_name}</td>
                       <td className="td-vendor">{link.vendor_name ?? '—'}</td>
                       <td>{formatDate(link.created_at)}</td>
                       <td>{formatDate(link.expires_at)}</td>
@@ -224,8 +222,7 @@ export default function Dashboard() {
                 <div key={link.id} className="link-card">
                   <div className="link-card-top">
                     <div>
-                      <p className="link-card-name">{link.client_name}</p>
-                      <p className="link-card-company">{link.company_name}</p>
+                      <p className="link-card-name">{link.commercial_name}</p>
                       {link.vendor_name && (
                         <p className="link-card-company">Vendedor: {link.vendor_name}</p>
                       )}

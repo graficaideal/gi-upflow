@@ -96,8 +96,8 @@ export default function LinkDetail() {
       <div className="detail-card">
         <div className="detail-card-header">
           <div>
-            <h2 className="detail-client">{link.client_name}</h2>
-            <p className="detail-company">{link.company_name}</p>
+            <p className="detail-meta-label">Designação Comercial</p>
+            <h2 className="detail-client">{link.commercial_name}</h2>
           </div>
           <span className={`status-badge ${s.cls}`}>{s.label}</span>
         </div>
@@ -150,7 +150,7 @@ export default function LinkDetail() {
           <div className="detail-card">
             <h4 className="sub-card-title">Dados da Empresa</h4>
             <div className="sub-fields">
-              <Field label="Nome da Empresa"  value={sub.company_name} />
+              <Field label="Designação Fiscal"  value={sub.fiscal_name} />
               <Field label="NIF"              value={sub.nif} />
               <Field label="Morada"           value={sub.address} />
               <Field label="Código Postal"    value={sub.codigo_postal} />

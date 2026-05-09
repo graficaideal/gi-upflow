@@ -117,7 +117,7 @@ export default function FormPage() {
     <div className="form-page">
       <header className="form-header">
         <img src="/logo.svg" alt="Gráfica Ideal" className="form-logo-img" />
-        <p className="form-client-name">{link?.client_name}</p>
+        <p className="form-client-name">{link?.commercial_name}</p>
       </header>
 
       <div className="form-progress-wrap">
@@ -136,7 +136,7 @@ export default function FormPage() {
 
       <div className="form-body">
         {submitError && <div className="form-submit-error">{submitError}</div>}
-        {step === 0 && <StepCompany {...stepProps} companyName={link?.company_name} />}
+        {step === 0 && <StepCompany {...stepProps} />}
         {step === 1 && <StepContacts {...stepProps} />}
         {step === 2 && <StepAuth {...stepProps} />}
         {step === 3 && <StepRGPD {...stepProps} onSubmit={handleSubmit} submitting={submitting} />}

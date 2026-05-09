@@ -17,7 +17,7 @@ export async function submitForm(token, formData) {
     .from('upflow_submissions')
     .insert({
       link_id:            link.id,
-      company_name:       formData.company_name,
+      fiscal_name:        formData.fiscal_name,
       nif:                formData.nif,
       address:            formData.morada          || null,
       codigo_postal:      formData.codigo_postal   || null,

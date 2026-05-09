@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { formatPhone } from '../../utils/phone'
 
-export default function StepCompany({ formData, onNext, companyName }) {
+export default function StepCompany({ formData, onNext }) {
   const [contactError, setContactError] = useState(null)
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     defaultValues: {
-      company_name:  formData.company_name  ?? companyName ?? '',
+      fiscal_name:   formData.fiscal_name   ?? '',
       nif:           formData.nif           ?? '',
       morada:        formData.morada        ?? '',
       codigo_postal: formData.codigo_postal ?? '',
@@ -34,12 +34,12 @@ export default function StepCompany({ formData, onNext, companyName }) {
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div className="fg">
-          <label>Nome da Empresa *</label>
+          <label>Designação Fiscal *</label>
           <input
-            className={errors.company_name ? 'input-error' : ''}
-            {...register('company_name', { required: 'Campo obrigatório' })}
+            className={errors.fiscal_name ? 'input-error' : ''}
+            {...register('fiscal_name', { required: 'Campo obrigatório' })}
           />
-          {errors.company_name && <span className="fg-error">{errors.company_name.message}</span>}
+          {errors.fiscal_name && <span className="fg-error">{errors.fiscal_name.message}</span>}
         </div>
 
         <div className="fg">

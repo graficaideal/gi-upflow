@@ -91,8 +91,7 @@ export default function AdminDashboard() {
             <table className="links-table">
               <thead>
                 <tr>
-                  <th>Cliente</th>
-                  <th>Empresa</th>
+                  <th>Designação Comercial</th>
                   <th>Criado em</th>
                   <th>Prazo</th>
                   <th>Estado</th>
@@ -104,8 +103,7 @@ export default function AdminDashboard() {
                   const s = STATUS_MAP[link.status] ?? { label: link.status, cls: '' }
                   return (
                     <tr key={link.id}>
-                      <td>{link.client_name}</td>
-                      <td>{link.company_name}</td>
+                      <td>{link.commercial_name}</td>
                       <td>{formatDate(link.created_at)}</td>
                       <td>{formatDate(link.expires_at)}</td>
                       <td><span className={`status-badge ${s.cls}`}>{s.label}</span></td>
@@ -124,8 +122,7 @@ export default function AdminDashboard() {
                 <div key={link.id} className="link-card">
                   <div className="link-card-top">
                     <div>
-                      <p className="link-card-name">{link.client_name}</p>
-                      <p className="link-card-company">{link.company_name}</p>
+                      <p className="link-card-name">{link.commercial_name}</p>
                     </div>
                     <span className={`status-badge ${s.cls}`}>{s.label}</span>
                   </div>

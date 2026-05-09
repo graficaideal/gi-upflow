@@ -18,17 +18,16 @@ const generateToken = () => {
   return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
 }
 
-export async function createLink(clientName, companyName, expiresAt, vendorId, vendorName) {
+export async function createLink(commercialName, expiresAt, vendorId, vendorName) {
   const { data, error } = await supabase
     .from('upflow_links')
     .insert({
-      client_name:  clientName,
-      company_name: companyName,
-      expires_at:   expiresAt,
-      status:       'pending',
-      token:        generateToken(),
-      vendor_id:    vendorId   || null,
-      vendor_name:  vendorName || null,
+      commercial_name: commercialName,
+      expires_at:      expiresAt,
+      status:          'pending',
+      token:           generateToken(),
+      vendor_id:       vendorId   || null,
+      vendor_name:     vendorName || null,
     })
     .select('id, token')
     .single()
@@ -40,7 +39,7 @@ export async function createLink(clientName, companyName, expiresAt, vendorId, v
 export async function getMyLinks() {
   const { data, error } = await supabase
     .from('upflow_links')
-    .select('id, client_name, company_name, created_at, expires_at, status, token, vendor_id, vendor_name, opened_at')
+    .select('id, commercial_name, created_at, expires_at, status, token, vendor_id, vendor_name, opened_at')
     .order('created_at', { ascending: false })
 
   if (error) throw error
@@ -50,7 +49,7 @@ export async function getMyLinks() {
 export async function getAllLinks() {
   const { data, error } = await supabase
     .from('upflow_links')
-    .select('id, client_name, company_name, created_at, expires_at, status, token, vendor_id, vendor_name, opened_at')
+    .select('id, commercial_name, created_at, expires_at, status, token, vendor_id, vendor_name, opened_at')
     .order('created_at', { ascending: false })
 
   if (error) throw error
@@ -70,7 +69,7 @@ export async function markOpened(token) {
 export async function getLinkByToken(token) {
   const { data, error } = await supabase
     .from('upflow_links')
-    .select('id, client_name, company_name, expires_at, status, token')
+    .select('id, commercial_name, expires_at, status, token')
     .eq('token', token)
     .single()
 

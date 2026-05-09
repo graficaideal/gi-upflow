@@ -3,7 +3,7 @@ import { supabase } from '../utils/supabase'
 export async function getAuthorizations() {
   const { data: links, error: linksError } = await supabase
     .from('upflow_links')
-    .select('id, company_name')
+    .select('id, commercial_name')
     .eq('status', 'completed')
 
   if (linksError) {
@@ -16,7 +16,7 @@ export async function getAuthorizations() {
 
   const { data: submissions, error: subsError } = await supabase
     .from('upflow_submissions')
-    .select('id, link_id, company_name, submitted_at')
+    .select('id, link_id, submitted_at')
     .in('link_id', linkIds)
 
   if (subsError) {
@@ -49,12 +49,12 @@ export async function getAuthorizations() {
     .map(sub => {
       const auths = authMap[sub.id] ?? {}
       return {
-        company_name: sub.company_name || linkMap[sub.link_id]?.company_name || '—',
-        submitted_at: sub.submitted_at,
-        fotos:        auths.fotos       ?? false,
-        videos:       auths.videos      ?? false,
-        publicacoes:  auths.publicacoes ?? false,
+        commercial_name: linkMap[sub.link_id]?.commercial_name || '—',
+        submitted_at:    sub.submitted_at,
+        fotos:           auths.fotos       ?? false,
+        videos:          auths.videos      ?? false,
+        publicacoes:     auths.publicacoes ?? false,
       }
     })
-    .sort((a, b) => a.company_name.localeCompare(b.company_name, 'pt'))
+    .sort((a, b) => a.commercial_name.localeCompare(b.commercial_name, 'pt'))
 }
