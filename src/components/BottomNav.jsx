@@ -21,6 +21,16 @@ function PlusCircleIcon() {
   )
 }
 
+function ImageAuthIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <path d="M21 15l-5-5L5 21" />
+    </svg>
+  )
+}
+
 function LogoutIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -50,6 +60,11 @@ export default function BottomNav() {
       <NavLink to="/links/create" className={({ isActive }) => `bottom-nav-item${isActive ? ' active' : ''}`}>
         <span className="bottom-nav-icon"><PlusCircleIcon /></span>
         <span className="bottom-nav-label">Criar Link</span>
+      </NavLink>
+
+      <NavLink to="/authorizations" className={({ isActive }) => `bottom-nav-item${isActive ? ' active' : ''}`}>
+        <span className="bottom-nav-icon"><ImageAuthIcon /></span>
+        <span className="bottom-nav-label">Autorizações</span>
       </NavLink>
 
       <button className="bottom-nav-item bottom-nav-logout" onClick={handleLogout}>
