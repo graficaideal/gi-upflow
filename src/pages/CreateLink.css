@@ -147,7 +147,12 @@
 @media (max-width: 768px) {
   .create-link { max-width: 100%; }
 
-  .create-link-card { padding: 20px 16px; }
+  .create-link-card {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+  }
 
   .link-result-url {
     flex-direction: column;
