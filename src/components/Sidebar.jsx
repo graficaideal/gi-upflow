@@ -44,8 +44,8 @@ function ImageAuthIcon() {
 
 const NAV_ITEMS = [
   { to: '/dashboard',      label: 'Dashboard',    Icon: HomeIcon },
-  { to: '/links/create',   label: 'Criar Link',   Icon: PlusCircleIcon },
   { to: '/authorizations', label: 'Autorizações', Icon: ImageAuthIcon },
+  { to: '/links/create',   label: 'Criar Link',   Icon: PlusCircleIcon },
 ]
 
 export default function Sidebar() {
