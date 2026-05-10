@@ -21,6 +21,25 @@ const AUTH_ORDER = ['fotos', 'videos', 'publicacoes']
 const DEPT_LABELS = { compras: 'Dep. Compras', financeiro: 'Dep. Financeiro', marketing: 'Dep. Marketing' }
 const DEPT_ORDER  = ['compras', 'financeiro', 'marketing']
 
+const cargoLabels = {
+  'Administrador': 'Administrador',
+  'Administrator': 'Administrador',
+  'Diretor': 'Diretor',
+  'Director': 'Diretor',
+  'Responsável': 'Responsável',
+  'Manager': 'Responsável',
+  'Responsable': 'Responsável',
+  'Técnico': 'Técnico',
+  'Technician': 'Técnico',
+  'Outro': 'Outro',
+  'Other': 'Outro',
+  'Otro': 'Outro',
+}
+
+function normalizeCargo(cargo) {
+  return cargoLabels[cargo] ?? cargo
+}
+
 function formatDate(str) {
   if (!str) return '—'
   return new Date(str).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })
@@ -155,7 +174,7 @@ async function downloadPDF(link) {
     addSubheading(DEPT_LABELS[dept])
     if (c) {
       addField('Nome', c.name)
-      if (c.cargo) addField('Cargo', c.cargo === 'outro' ? (c.cargo_outro || '—') : c.cargo)
+      if (c.cargo) addField('Cargo', c.cargo === 'outro' ? (c.cargo_outro || '—') : normalizeCargo(c.cargo))
       addField('Email', c.email)
       addField('Telefone', c.phone)
       addField('Telemóvel', c.mobile)
@@ -435,7 +454,7 @@ export default function LinkDetail() {
                       <>
                         <Field label="Nome"      value={c.name} />
                         {c.cargo && (
-                          <Field label="Cargo" value={c.cargo === 'outro' ? c.cargo_outro : c.cargo} />
+                          <Field label="Cargo" value={c.cargo === 'outro' ? c.cargo_outro : normalizeCargo(c.cargo)} />
                         )}
                         <Field label="Email"     value={c.email} />
                         <Field label="Telefone"  value={c.phone} />
