@@ -344,7 +344,10 @@ export default function LinkDetail() {
             <p className="detail-meta-label">Designação Comercial</p>
             <h2 className="detail-client">{link.commercial_name}</h2>
           </div>
-          <span className={`status-badge ${s.cls}`}>{s.label}</span>
+          <div className="detail-card-badges">
+            <span className={`status-badge ${s.cls}`}>{s.label}</span>
+            <span className="lang-badge">{(link.language ?? 'pt').toUpperCase()}</span>
+          </div>
         </div>
 
         <div className="detail-meta">

@@ -18,7 +18,7 @@ const generateToken = () => {
   return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
 }
 
-export async function createLink(commercialName, expiresAt, vendorId, vendorName) {
+export async function createLink(commercialName, expiresAt, vendorId, vendorName, language = 'pt') {
   const { data, error } = await supabase
     .from('upflow_links')
     .insert({
@@ -28,6 +28,7 @@ export async function createLink(commercialName, expiresAt, vendorId, vendorName
       token:           generateToken(),
       vendor_id:       vendorId   || null,
       vendor_name:     vendorName || null,
+      language:        language,
     })
     .select('id, token')
     .single()
@@ -69,7 +70,7 @@ export async function markOpened(token) {
 export async function getLinkByToken(token) {
   const { data, error } = await supabase
     .from('upflow_links')
-    .select('id, commercial_name, expires_at, status, token')
+    .select('id, commercial_name, expires_at, status, token, language')
     .eq('token', token)
     .single()
 

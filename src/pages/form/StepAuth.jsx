@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
-const QUESTIONS = [
-  { key: 'fotos',      label: 'Autoriza a utilização de fotografias da vossa empresa em materiais promocionais?' },
-  { key: 'videos',     label: 'Autoriza a utilização de vídeos da vossa empresa em materiais promocionais?' },
-  { key: 'publicacoes', label: 'Autoriza a publicação de conteúdos relacionados com a vossa empresa nas redes sociais da Gráfica Ideal?' },
+const AUTH_KEYS = [
+  { key: 'fotos',       tKey: 'authPhotos' },
+  { key: 'videos',      tKey: 'authVideos' },
+  { key: 'publicacoes', tKey: 'authPublications' },
 ]
 
-export default function StepAuth({ formData, onNext, onBack }) {
+export default function StepAuth({ formData, onNext, onBack, t }) {
   const [answers, setAnswers] = useState({
     fotos:       formData.fotos       ?? null,
     videos:      formData.videos      ?? null,
@@ -20,9 +20,9 @@ export default function StepAuth({ formData, onNext, onBack }) {
   }
 
   function handleNext() {
-    const unanswered = QUESTIONS.filter(q => answers[q.key] === null)
+    const unanswered = AUTH_KEYS.filter(q => answers[q.key] === null)
     if (unanswered.length > 0) {
-      setError('Por favor responda a todas as questões antes de continuar.')
+      setError(t.required)
       return
     }
     onNext(answers)
@@ -30,26 +30,26 @@ export default function StepAuth({ formData, onNext, onBack }) {
 
   return (
     <div className="step-card">
-      <h2 className="step-title">Autorizações de Comunicação</h2>
-      <p className="step-subtitle">Indique se autoriza a utilização dos seguintes conteúdos por parte da Gráfica Ideal.</p>
+      <h2 className="step-title">{t.step4Title}</h2>
+      <p className="step-subtitle">{t.authIntro}</p>
 
-      {QUESTIONS.map(({ key, label }) => (
+      {AUTH_KEYS.map(({ key, tKey }) => (
         <div key={key} className="auth-question">
-          <p className="auth-question-label">{label}</p>
+          <p className="auth-question-label">{t[tKey]}</p>
           <div className="auth-buttons">
             <button
               type="button"
               className={`auth-btn ${answers[key] === 'sim' ? 'selected-sim' : ''}`}
               onClick={() => select(key, 'sim')}
             >
-              Sim
+              {t.yes}
             </button>
             <button
               type="button"
               className={`auth-btn ${answers[key] === 'nao' ? 'selected-nao' : ''}`}
               onClick={() => select(key, 'nao')}
             >
-              Não
+              {t.no}
             </button>
           </div>
         </div>
@@ -58,8 +58,8 @@ export default function StepAuth({ formData, onNext, onBack }) {
       {error && <div className="fg-error" style={{ marginBottom: 16 }}>{error}</div>}
 
       <div className="step-nav">
-        <button type="button" className="btn-secondary" onClick={onBack}>← Anterior</button>
-        <button type="button" className="btn-primary" onClick={handleNext}>Seguinte →</button>
+        <button type="button" className="btn-secondary" onClick={onBack}>← {t.previous}</button>
+        <button type="button" className="btn-primary" onClick={handleNext}>{t.next} →</button>
       </div>
     </div>
   )

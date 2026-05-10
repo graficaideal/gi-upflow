@@ -2,25 +2,34 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { formatPhone } from '../../utils/phone'
 
-const DEPARTMENTS = [
-  { key: 'compras',    label: 'Compras' },
-  { key: 'financeiro', label: 'Financeiro' },
-  { key: 'marketing',  label: 'Marketing' },
-]
+const DEPT_KEYS = ['compras', 'financeiro', 'marketing']
 
-export default function StepContacts({ formData, onNext, onBack }) {
+const CARGO_OPTIONS = {
+  pt: ['Administrador', 'Diretor', 'Responsável', 'Técnico'],
+  en: ['Administrator', 'Director', 'Manager', 'Technician'],
+  es: ['Administrador', 'Director', 'Responsable', 'Técnico'],
+}
+
+const OUTRO_LABEL = { pt: 'Outro', en: 'Other', es: 'Otro' }
+
+export default function StepContacts({ formData, onNext, onBack, t, language }) {
+  const isPT = language === 'pt'
+  const deptLabels = {
+    compras:    t.deptCompras,
+    financeiro: t.deptFinanceiro,
+    marketing:  t.deptMarketing,
+  }
+  const cargoOpts = CARGO_OPTIONS[language] ?? CARGO_OPTIONS.pt
+  const outroLabel = OUTRO_LABEL[language] ?? 'Outro'
+
   const [crossErrors, setCrossErrors] = useState({})
-  const [billingSameEmail, setBillingSameEmail] = useState(
-    formData.billing_same_email ?? null
-  )
-  const [billingMode, setBillingMode] = useState(
-    formData.billing_mode ?? null
-  )
+  const [billingSameEmail, setBillingSameEmail] = useState(formData.billing_same_email ?? null)
+  const [billingMode, setBillingMode] = useState(formData.billing_mode ?? null)
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
     defaultValues: {
       ...Object.fromEntries(
-        DEPARTMENTS.flatMap(({ key }) => [
+        DEPT_KEYS.flatMap(key => [
           [`${key}_nome`,        formData[`${key}_nome`]        ?? ''],
           [`${key}_email`,       formData[`${key}_email`]       ?? ''],
           [`${key}_telefone`,    formData[`${key}_telefone`]    ?? ''],
@@ -37,32 +46,24 @@ export default function StepContacts({ formData, onNext, onBack }) {
   function onSubmit(data) {
     const newErrors = {}
 
-    DEPARTMENTS.forEach(({ key }) => {
+    DEPT_KEYS.forEach(key => {
       const nome = data[`${key}_nome`]?.trim()
       const tel  = data[`${key}_telefone`]?.trim()
       const mob  = data[`${key}_telemovel`]?.trim()
 
-      if (!nome) {
-        newErrors[`${key}_nome`] = 'Campo obrigatório'
-      }
-      if (!tel && !mob) {
-        newErrors[`${key}_contact`] = 'Indique pelo menos um número de telefone ou telemóvel'
-      }
+      if (!nome)       newErrors[`${key}_nome`]    = t.required
+      if (!tel && !mob) newErrors[`${key}_contact`] = t.atLeastOneContact
       if (data[`${key}_cargo`] === 'outro' && !data[`${key}_cargo_outro`]?.trim()) {
-        newErrors[`${key}_cargo_outro`] = 'Campo obrigatório'
+        newErrors[`${key}_cargo_outro`] = t.required
       }
     })
 
-    if (billingSameEmail === null) {
-      newErrors['billing_same_email'] = 'Por favor indique se utiliza o mesmo email de faturação'
-    }
-    if (!billingMode) {
-      newErrors['billing_mode'] = 'Por favor selecione o modo de envio de faturas'
-    }
+    if (billingSameEmail === null) newErrors['billing_same_email'] = t.required
+    if (!billingMode)              newErrors['billing_mode']        = t.required
     if (billingSameEmail === false) {
       const email = data.billing_email?.trim()
       if (!email) {
-        newErrors['billing_email'] = 'Campo obrigatório'
+        newErrors['billing_email'] = t.required
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         newErrors['billing_email'] = 'Email inválido'
       }
@@ -82,16 +83,15 @@ export default function StepContacts({ formData, onNext, onBack }) {
 
   return (
     <div className="step-card">
-      <h2 className="step-title">Contactos por Departamento</h2>
-      <p className="step-subtitle">Preencha os contactos dos três departamentos. Para cada um, indique pelo menos um número de telefone ou telemóvel.</p>
+      <h2 className="step-title">{t.step2Title}</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        {DEPARTMENTS.map(({ key, label }) => (
+        {DEPT_KEYS.map(key => (
           <div key={key} className="dept-section">
-            <p className="dept-title">{label}</p>
+            <p className="dept-title">{deptLabels[key]}</p>
 
             <div className="fg">
-              <label>Nome *</label>
+              <label>{t.name} *</label>
               <input
                 className={crossErrors[`${key}_nome`] ? 'input-error' : ''}
                 {...register(`${key}_nome`)}
@@ -102,20 +102,19 @@ export default function StepContacts({ formData, onNext, onBack }) {
             </div>
 
             <div className="fg">
-              <label>Cargo</label>
+              <label>{t.cargo}</label>
               <select {...register(`${key}_cargo`)}>
-                <option value="">— Selecione —</option>
-                <option value="Administrador">Administrador</option>
-                <option value="Diretor">Diretor</option>
-                <option value="Responsável">Responsável</option>
-                <option value="Técnico">Técnico</option>
-                <option value="outro">Outro</option>
+                <option value="">— —</option>
+                {cargoOpts.map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+                <option value="outro">{outroLabel}</option>
               </select>
             </div>
 
             {watch(`${key}_cargo`) === 'outro' && (
               <div className="fg">
-                <label>Especifique o cargo *</label>
+                <label>{t.cargoOther} *</label>
                 <input
                   className={crossErrors[`${key}_cargo_outro`] ? 'input-error' : ''}
                   {...register(`${key}_cargo_outro`)}
@@ -127,12 +126,12 @@ export default function StepContacts({ formData, onNext, onBack }) {
             )}
 
             <div className="fg">
-              <label>Email *</label>
+              <label>{t.email} *</label>
               <input
                 type="email"
                 className={errors[`${key}_email`] ? 'input-error' : ''}
                 {...register(`${key}_email`, {
-                  required: 'Campo obrigatório',
+                  required: t.required,
                   validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email inválido',
                 })}
               />
@@ -143,19 +142,19 @@ export default function StepContacts({ formData, onNext, onBack }) {
 
             <div className="fg-row">
               <div className="fg">
-                <label>Telefone</label>
+                <label>{t.phone}</label>
                 <input
+                  placeholder={isPT ? 'XXX XXX XXX' : ''}
                   {...register(`${key}_telefone`)}
-                  onChange={e => setValue(`${key}_telefone`, formatPhone(e.target.value))}
-                  placeholder="XXX XXX XXX"
+                  onChange={isPT ? e => setValue(`${key}_telefone`, formatPhone(e.target.value)) : undefined}
                 />
               </div>
               <div className="fg">
-                <label>Telemóvel</label>
+                <label>{t.mobile}</label>
                 <input
+                  placeholder={isPT ? 'XXX XXX XXX' : ''}
                   {...register(`${key}_telemovel`)}
-                  onChange={e => setValue(`${key}_telemovel`, formatPhone(e.target.value))}
-                  placeholder="XXX XXX XXX"
+                  onChange={isPT ? e => setValue(`${key}_telemovel`, formatPhone(e.target.value)) : undefined}
                 />
               </div>
             </div>
@@ -166,24 +165,24 @@ export default function StepContacts({ formData, onNext, onBack }) {
 
             {key === 'financeiro' && (
               <div className="billing-section">
-                <p className="billing-section-title">Faturação</p>
+                <p className="billing-section-title">{t.billingMode}</p>
 
                 <div className="fg">
-                  <label>Utiliza o mesmo email do Dep. Financeiro?</label>
+                  <label>{t.billingQuestion}</label>
                   <div className="auth-buttons">
                     <button
                       type="button"
                       className={`auth-btn ${billingSameEmail === true ? 'selected-sim' : ''}`}
                       onClick={() => setBillingSameEmail(true)}
                     >
-                      Sim
+                      {t.yes}
                     </button>
                     <button
                       type="button"
                       className={`auth-btn ${billingSameEmail === false ? 'selected-nao' : ''}`}
                       onClick={() => setBillingSameEmail(false)}
                     >
-                      Não
+                      {t.no}
                     </button>
                   </div>
                   {crossErrors['billing_same_email'] && (
@@ -193,7 +192,7 @@ export default function StepContacts({ formData, onNext, onBack }) {
 
                 {billingSameEmail === false && (
                   <div className="fg">
-                    <label>Email de faturação *</label>
+                    <label>{t.billingEmail} *</label>
                     <input
                       type="email"
                       className={crossErrors['billing_email'] ? 'input-error' : ''}
@@ -206,21 +205,21 @@ export default function StepContacts({ formData, onNext, onBack }) {
                 )}
 
                 <div className="fg">
-                  <label>Modo de envio de faturas *</label>
+                  <label>{t.billingMode} *</label>
                   <div className="auth-buttons">
                     <button
                       type="button"
                       className={`auth-btn ${billingMode === 'eletronico' ? 'selected-sim' : ''}`}
                       onClick={() => setBillingMode('eletronico')}
                     >
-                      Eletrónico
+                      {t.billingModeElectronic}
                     </button>
                     <button
                       type="button"
                       className={`auth-btn ${billingMode === 'papel' ? 'selected-sim' : ''}`}
                       onClick={() => setBillingMode('papel')}
                     >
-                      Papel
+                      {t.billingModePaper}
                     </button>
                   </div>
                   {crossErrors['billing_mode'] && (
@@ -229,11 +228,10 @@ export default function StepContacts({ formData, onNext, onBack }) {
                 </div>
 
                 <div className="fg">
-                  <label>Notas de faturação</label>
+                  <label>{t.billingNotes}</label>
                   <textarea
                     {...register('billing_notes')}
                     rows={3}
-                    placeholder="Observações opcionais…"
                   />
                 </div>
               </div>
@@ -242,8 +240,8 @@ export default function StepContacts({ formData, onNext, onBack }) {
         ))}
 
         <div className="step-nav">
-          <button type="button" className="btn-secondary" onClick={onBack}>← Anterior</button>
-          <button type="submit" className="btn-primary">Seguinte →</button>
+          <button type="button" className="btn-secondary" onClick={onBack}>← {t.previous}</button>
+          <button type="submit" className="btn-primary">{t.next} →</button>
         </div>
       </form>
     </div>

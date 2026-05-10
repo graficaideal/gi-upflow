@@ -1,4 +1,4 @@
-export default function FormSuccess() {
+export default function FormSuccess({ t }) {
   return (
     <div className="form-page form-page--center" style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
       <div className="form-message-card">
@@ -8,8 +8,8 @@ export default function FormSuccess() {
             <polyline points="9 12 11 14 15 10" />
           </svg>
         </div>
-        <h2>Obrigado!</h2>
-        <p>Os seus dados foram submetidos com sucesso. A equipa da Gráfica Ideal irá analisá-los brevemente.</p>
+        <h2>{t.successTitle}</h2>
+        <p>{t.successText}</p>
 
         <a
           href="/gi-ficha.pdf"
@@ -36,7 +36,7 @@ export default function FormSuccess() {
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          Descarregar Ficha da Gráfica Ideal
+          {t.downloadPdf}
         </a>
       </div>
     </div>

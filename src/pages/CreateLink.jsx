@@ -67,7 +67,7 @@ export default function CreateLink() {
   const [vendors, setVendors] = useState([])
 
   const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm({
-    defaultValues: { vendor_id: '', expires_at: getDefaultExpiry() },
+    defaultValues: { vendor_id: '', expires_at: getDefaultExpiry(), language: 'pt' },
   })
 
   const minDate = getMinDate()
@@ -88,11 +88,11 @@ export default function CreateLink() {
     }
   }, [vendors])
 
-  async function onSubmit({ vendor_id, commercial_name, expires_at }) {
+  async function onSubmit({ vendor_id, commercial_name, expires_at, language }) {
     setSubmitError('')
     try {
       const vendor = vendors.find(v => v.id === vendor_id)
-      const data = await createLink(commercial_name, expires_at, vendor_id, vendor?.name ?? '')
+      const data = await createLink(commercial_name, expires_at, vendor_id, vendor?.name ?? '', language)
       setToken(data.token)
     } catch {
       setSubmitError('Erro ao criar link. Verifica a ligação e tenta novamente.')
@@ -148,6 +148,19 @@ export default function CreateLink() {
               {...register('commercial_name', { required: 'Campo obrigatório' })}
             />
             {errors.commercial_name && <p className="form-error">{errors.commercial_name.message}</p>}
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="language">Idioma do Formulário</label>
+            <select
+              id="language"
+              className="form-input"
+              {...register('language')}
+            >
+              <option value="pt">🇵🇹 Português</option>
+              <option value="en">🇬🇧 English</option>
+              <option value="es">🇪🇸 Español</option>
+            </select>
           </div>
 
           <div className="form-group">

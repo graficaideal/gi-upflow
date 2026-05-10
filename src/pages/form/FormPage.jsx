@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { getLinkByToken, markOpened } from '../../hooks/useLinks'
 import { submitForm } from '../../hooks/useSubmission'
+import { translations } from '../../utils/translations'
 import StepCompany from './StepCompany'
 import StepContacts from './StepContacts'
 import StepAuth from './StepAuth'
 import StepRGPD from './StepRGPD'
 import FormSuccess from './FormSuccess'
 import './FormPage.css'
-
-const STEPS = ['Empresa', 'Contactos', 'Autorizações', 'RGPD']
 
 export default function FormPage() {
   const { token } = useParams()
@@ -42,6 +41,10 @@ export default function FormPage() {
       .catch(() => setStatus('invalid'))
   }, [token])
 
+  const language = link?.language ?? 'pt'
+  const t = translations[language] ?? translations.pt
+  const STEPS = [t.step1Title, t.step2Title, t.step4Title, t.step3Title]
+
   function next(data) {
     setFormData(prev => ({ ...prev, ...data }))
     setStep(s => s + 1)
@@ -73,7 +76,7 @@ export default function FormPage() {
     )
   }
 
-  if (status === 'done') return <FormSuccess />
+  if (status === 'done') return <FormSuccess t={t} />
 
   if (status === 'invalid') {
     return (
@@ -111,7 +114,7 @@ export default function FormPage() {
     )
   }
 
-  const stepProps = { formData, onNext: next, onBack: back }
+  const stepProps = { formData, onNext: next, onBack: back, t, language }
 
   return (
     <div className="form-page">
@@ -148,7 +151,7 @@ export default function FormPage() {
               <polyline points="7 10 12 15 17 10"/>
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
-            Descarregar Ficha da Gráfica Ideal
+            {t.downloadPdf}
           </a>
         </div>
       </div>

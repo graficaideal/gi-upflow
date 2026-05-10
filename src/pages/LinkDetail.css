@@ -47,6 +47,24 @@
   line-height: 1.2;
 }
 
+.detail-card-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.lang-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
 
 /* ── Meta row ──────────────────────────────────────────────────────────────── */
 .detail-meta {
