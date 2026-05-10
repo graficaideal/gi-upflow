@@ -34,6 +34,15 @@ export default function Login() {
   const inputRef = useRef(null)
 
   useEffect(() => {
+    const stored = localStorage.getItem('upflow-theme')
+    document.documentElement.classList.add('dark')
+    return () => {
+      const isDark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
+      document.documentElement.classList.toggle('dark', isDark)
+    }
+  }, [])
+
+  useEffect(() => {
     inputRef.current?.focus()
     getVendors().then(list => {
       setVendors(list)
