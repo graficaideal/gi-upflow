@@ -64,7 +64,7 @@ export default function Login() {
     const { error } = login(value)
     if (error) {
       setShake(true)
-      setTimeout(() => { setShake(false); setPin('') }, 600)
+      setTimeout(() => { setShake(false); setPin('') }, 400)
     } else {
       const vendor = vendors.find(v => v.id === selectedVendorId)
       if (vendor) {
@@ -117,10 +117,12 @@ export default function Login() {
           readOnly
         />
 
-        <div className={`pin-dots${shake ? ' pin-dots--shake' : ''}`}>
-          {Array.from({ length: pin.length }).map((_, i) => (
-            <span key={i} className="pin-dot filled" />
-          ))}
+        <div className="pin-dots-wrap">
+          <div className={`pin-dots${shake ? ' pin-dots--shake' : ''}`}>
+            {Array.from({ length: pin.length }).map((_, i) => (
+              <span key={i} className="pin-dot filled" />
+            ))}
+          </div>
         </div>
 
         {error && <p className="login-error">{error}</p>}
