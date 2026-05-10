@@ -185,6 +185,8 @@
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  .auth-page { max-width: 100%; }
+
   .auth-stats-grid {
     grid-template-columns: 1fr;
     gap: 12px;
