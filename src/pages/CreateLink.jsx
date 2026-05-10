@@ -157,9 +157,9 @@ export default function CreateLink() {
               className="form-input"
               {...register('language')}
             >
-              <option value="pt">🇵🇹 Português</option>
-              <option value="en">🇬🇧 English</option>
-              <option value="es">🇪🇸 Español</option>
+              <option value="pt">Português</option>
+              <option value="en">English</option>
+              <option value="es">Español</option>
             </select>
           </div>
 
