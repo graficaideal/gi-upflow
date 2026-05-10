@@ -1,6 +1,6 @@
 /* ── Page shell ────────────────────────────────────────────────────────────── */
 .form-page {
-  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--color-bg);
   font-family: var(--font-base);
   display: flex;
