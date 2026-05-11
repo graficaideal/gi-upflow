@@ -258,6 +258,12 @@
   color: #e57373;
 }
 
+.fg-valid {
+  font-size: 12px;
+  color: #34a853;
+  font-weight: 600;
+}
+
 /* ── Step navigation ───────────────────────────────────────────────────────── */
 .step-nav {
   display: flex;

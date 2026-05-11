@@ -4,9 +4,17 @@ import { formatPhone } from '../../utils/phone'
 import { formatNif, validateNIF } from '../../utils/nif'
 import { formatPostalCode } from '../../utils/postalCode'
 
+function initNifStatus(isPT, nif) {
+  if (!isPT || !nif) return null
+  const digits = nif.replace(/\s/g, '')
+  if (digits.length !== 9) return null
+  return validateNIF(nif) ? 'valid' : 'invalid'
+}
+
 export default function StepCompany({ formData, onNext, t, language }) {
   const [contactError, setContactError] = useState(null)
   const isPT = language === 'pt'
+  const [nifStatus, setNifStatus] = useState(() => initNifStatus(isPT, formData.nif))
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     defaultValues: {
@@ -48,16 +56,29 @@ export default function StepCompany({ formData, onNext, t, language }) {
         <div className="fg">
           <label>{t.nif} *</label>
           <input
-            className={errors.nif ? 'input-error' : ''}
+            className={nifStatus === 'invalid' || (!nifStatus && errors.nif) ? 'input-error' : ''}
             {...register('nif', {
               required: t.required,
               ...(isPT && {
                 validate: v => validateNIF(v) || 'NIF inválido',
               }),
             })}
-            onChange={isPT ? e => setValue('nif', formatNif(e.target.value)) : undefined}
+            onChange={e => {
+              const formatted = isPT ? formatNif(e.target.value) : e.target.value
+              setValue('nif', formatted)
+              if (isPT) {
+                const digits = formatted.replace(/\s/g, '')
+                if (digits.length === 9) {
+                  setNifStatus(validateNIF(formatted) ? 'valid' : 'invalid')
+                } else {
+                  setNifStatus(null)
+                }
+              }
+            }}
           />
-          {errors.nif && <span className="fg-error">{errors.nif.message}</span>}
+          {nifStatus === 'invalid' && <span className="fg-error">NIF inválido</span>}
+          {nifStatus === 'valid' && <span className="fg-valid">✓</span>}
+          {!nifStatus && errors.nif && <span className="fg-error">{errors.nif.message}</span>}
         </div>
 
         <div className="fg">
