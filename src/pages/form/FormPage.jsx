@@ -126,10 +126,9 @@ export default function FormPage() {
 
       <div className="form-progress-wrap">
         <div className="form-progress">
-          {STEPS.map((label, i) => (
+          {STEPS.map((_, i) => (
             <div key={i} className={`form-step-dot ${i < step ? 'dot-done' : ''} ${i === step ? 'dot-active' : ''}`}>
               <div className="dot-circle">{i < step ? '✓' : i + 1}</div>
-              <span className="dot-label">{label}</span>
             </div>
           ))}
           <div className="progress-track">
