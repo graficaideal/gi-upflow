@@ -29,6 +29,12 @@
   object-fit: contain;
 }
 
+.form-tagline {
+  font-size: 12px;
+  color: #8d9190;
+  text-align: center;
+}
+
 .form-client-name {
   font-size: 20px;
   font-weight: 700;
@@ -91,7 +97,16 @@
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  word-break: break-word;
+  max-width: 70px;
+}
+
+@media (min-width: 769px) and (max-width: 1100px) {
+  .dot-label {
+    font-size: 11px;
+  }
 }
 
 .dot-active .dot-label { color: var(--color-text); }

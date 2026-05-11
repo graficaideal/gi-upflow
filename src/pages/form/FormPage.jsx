@@ -76,7 +76,7 @@ export default function FormPage() {
     )
   }
 
-  if (status === 'done') return <FormSuccess t={t} />
+  if (status === 'done') return <FormSuccess t={t} formData={formData} language={language} commercialName={link?.commercial_name} />
 
   if (status === 'invalid') {
     return (
@@ -120,6 +120,7 @@ export default function FormPage() {
     <div className="form-page">
       <header className="form-header">
         <img src="/logo.svg" alt="Gráfica Ideal" className="form-logo-img" />
+        <p className="form-tagline">{t.appTagline}</p>
         <p className="form-client-name">{link?.commercial_name}</p>
       </header>
 
