@@ -1,0 +1,18 @@
+{
+  "name": "UpFlow",
+  "short_name": "UpFlow",
+  "description": "Portal de atualização de dados de clientes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#333F48",
+  "theme_color": "#333F48",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
