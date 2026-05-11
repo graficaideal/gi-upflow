@@ -97,9 +97,10 @@
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  white-space: normal;
+  white-space: nowrap;
   text-align: center;
-  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
   max-width: 70px;
 }
 
