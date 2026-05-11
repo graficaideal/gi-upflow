@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { jsPDF } from 'jspdf'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getLinkById } from '../hooks/useLinks'
+import { translations } from '../utils/translations'
 import './LinkDetail.css'
 
 const STATUS_MAP = {
@@ -71,6 +72,7 @@ function svgToPng() {
 async function downloadPDF(link) {
   const logoPng = await svgToPng()
   const sub = link.submission
+  const t = translations[link.language ?? 'pt'] ?? translations.pt
 
   const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' })
   const pageW = 210
@@ -206,7 +208,7 @@ async function downloadPDF(link) {
 
   // ── Secção 4 — Consentimento RGPD ────────────────────────
   addSectionTitle('4. Consentimento RGPD')
-  addField('Aceite', sub.rgpd_consent ? 'Sim' : 'Não')
+  addField('Aceite', sub.rgpd_consent ? t.yes : t.no)
   if (sub.rgpd_consent?.accepted_at) {
     addField(
       'Data e hora de aceitação',
