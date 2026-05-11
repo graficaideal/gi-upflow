@@ -17,3 +17,18 @@ export function formatNif(raw) {
   }
   return result
 }
+
+// PT-PT: Validação de NIF português pelo algoritmo oficial (módulo 11)
+export function validateNIF(nif) {
+  const digits = nif.replace(/\s/g, '')
+  if (!/^\d{9}$/.test(digits)) return false
+  const firstDigit = parseInt(digits[0])
+  if (![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(firstDigit)) return false
+  let sum = 0
+  for (let i = 0; i < 8; i++) {
+    sum += parseInt(digits[i]) * (9 - i)
+  }
+  const remainder = sum % 11
+  const checkDigit = remainder < 2 ? 0 : 11 - remainder
+  return checkDigit === parseInt(digits[8])
+}

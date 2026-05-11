@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { formatPhone } from '../../utils/phone'
-import { formatNif } from '../../utils/nif'
+import { formatNif, validateNIF } from '../../utils/nif'
 import { formatPostalCode } from '../../utils/postalCode'
 
 export default function StepCompany({ formData, onNext, t, language }) {
@@ -52,7 +52,7 @@ export default function StepCompany({ formData, onNext, t, language }) {
             {...register('nif', {
               required: t.required,
               ...(isPT && {
-                validate: v => v.replace(/\s/g, '').length === 9 || 'O NIF deve ter exactamente 9 dígitos',
+                validate: v => validateNIF(v) || 'NIF inválido',
               }),
             })}
             onChange={isPT ? e => setValue('nif', formatNif(e.target.value)) : undefined}
