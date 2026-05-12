@@ -17,6 +17,12 @@ const root    = join(__dir, '..')
 const { Resvg } = require('@resvg/resvg-js')
 const { jsPDF } = require(join(root, 'node_modules/jspdf/dist/jspdf.node.min.js'))
 
+// ── Fontes DM Sans ────────────────────────────────────────────────────────────
+const fontsDir = join(root, 'src', 'assets', 'fonts')
+const dmSansRegularB64 = readFileSync(join(fontsDir, 'DMSans-Regular.ttf')).toString('base64')
+const dmSansBoldB64    = readFileSync(join(fontsDir, 'DMSans-Bold.ttf')).toString('base64')
+const dmSansItalicB64  = readFileSync(join(fontsDir, 'DMSans-Italic.ttf')).toString('base64')
+
 // ── Logo SVG → PNG base64 ───────────────────────────────────────────────────
 const svgStr    = readFileSync(join(root, 'public/logo.svg'), 'utf8')
 const resvg     = new Resvg(svgStr, { fitTo: { mode: 'width', value: 140 } })
@@ -32,6 +38,13 @@ const INK    = [30,  35,  40]
 
 // ── Documento A4 ─────────────────────────────────────────────────────────────
 const doc      = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' })
+
+doc.addFileToVFS('DMSans-Regular.ttf', dmSansRegularB64)
+doc.addFont('DMSans-Regular.ttf', 'DMSans', 'normal')
+doc.addFileToVFS('DMSans-Bold.ttf', dmSansBoldB64)
+doc.addFont('DMSans-Bold.ttf', 'DMSans', 'bold')
+doc.addFileToVFS('DMSans-Italic.ttf', dmSansItalicB64)
+doc.addFont('DMSans-Italic.ttf', 'DMSans', 'italic')
 const pageW    = 210
 const pageH    = 297
 const margin   = 15
@@ -51,12 +64,12 @@ const logoY = 5 + (headerH - 5 - logoH) / 2
 doc.addImage(logoPngB64, 'PNG', margin, logoY, logoW, logoH)
 
 const titleX = margin + logoW + 6
-doc.setFont('helvetica', 'bold')
+doc.setFont('DMSans', 'bold')
 doc.setFontSize(13)
 doc.setTextColor(...WHITE)
 doc.text('Gráfica Ideal de Águeda — Indústrias Gráficas, SA', titleX, logoY + 7)
 
-doc.setFont('helvetica', 'normal')
+doc.setFont('DMSans', 'normal')
 doc.setFontSize(9)
 doc.setTextColor(...LIGHT)
 doc.text('Ficha de Fornecedor', titleX, logoY + 15)
@@ -75,7 +88,7 @@ function section(title) {
   checkBreak(12)
   doc.setFillColor(...DARK)
   doc.rect(margin, y, contentW, 8, 'F')
-  doc.setFont('helvetica', 'bold')
+  doc.setFont('DMSans', 'bold')
   doc.setFontSize(9.5)
   doc.setTextColor(...WHITE)
   doc.text(title, margin + 4, y + 5.5)
@@ -84,11 +97,11 @@ function section(title) {
 
 function field(label, value) {
   checkBreak(7)
-  doc.setFont('helvetica', 'bold')
+  doc.setFont('DMSans', 'bold')
   doc.setFontSize(8.5)
   doc.setTextColor(...LABEL)
   doc.text(`${label}:`, margin + 2, y)
-  doc.setFont('helvetica', 'normal')
+  doc.setFont('DMSans', 'normal')
   doc.setTextColor(...INK)
   doc.text(value, margin + 52, y)
   y += 6.5
@@ -115,7 +128,7 @@ y += 4
 
 // ── Secção 3 — Contactos por Departamento ───────────────────────────────────
 section('3. Contactos por Departamento')
-field('Geral / Encomendas', 'encomendas@graficaideal.pt')
+field('Encomendas', 'encomendas@graficaideal.pt')
 field('Orçamentação',       'orcamentacao@graficaideal.pt')
 field('Financeiro',         'financeiro@graficaideal.pt')
 field('Marketing',          'marketing@graficaideal.pt')
@@ -127,7 +140,7 @@ for (let i = 1; i <= total; i++) {
   doc.setPage(i)
   doc.setFillColor(...YELLOW)
   doc.rect(0, pageH - footerH, pageW, footerH, 'F')
-  doc.setFont('helvetica', 'normal')
+  doc.setFont('DMSans', 'normal')
   doc.setFontSize(7.5)
   doc.setTextColor(...DARK)
   doc.text(
