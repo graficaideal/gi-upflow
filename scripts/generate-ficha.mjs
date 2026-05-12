@@ -67,7 +67,7 @@ const titleX = margin + logoW + 6
 doc.setFont('DMSans', 'bold')
 doc.setFontSize(13)
 doc.setTextColor(...WHITE)
-doc.text('Gráfica Ideal de Águeda — Indústrias Gráficas, SA', titleX, logoY + 7)
+doc.text('Gráfica Ideal de Águeda - Indústrias Gráficas, SA', titleX, logoY + 7)
 
 doc.setFont('DMSans', 'normal')
 doc.setFontSize(9)
@@ -109,7 +109,7 @@ function field(label, value) {
 
 // ── Secção 1 — Dados da Empresa ──────────────────────────────────────────────
 section('1. Dados da Empresa')
-field('Designação',    'Gráfica Ideal de Águeda — Indústrias Gráficas, SA')
+field('Designação',    'Gráfica Ideal de Águeda - Indústrias Gráficas, SA')
 field('NIF',           '500 213 844')
 field('Morada',        'Rua da Indústria, 450 - Covão')
 field('Código Postal', '3750-883')
@@ -144,7 +144,7 @@ for (let i = 1; i <= total; i++) {
   doc.setFontSize(7.5)
   doc.setTextColor(...DARK)
   doc.text(
-    'Gráfica Ideal de Águeda — Indústrias Gráficas, SA | geral@graficaideal.pt | www.graficaideal.pt',
+    'Gráfica Ideal de Águeda - Indústrias Gráficas, SA | geral@graficaideal.pt | www.graficaideal.pt',
     pageW / 2,
     pageH - footerH + 7.5,
     { align: 'center' },
