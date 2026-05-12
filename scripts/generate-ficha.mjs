@@ -109,7 +109,8 @@ y += 4
 
 // ── Secção 2 — Dados Bancários ───────────────────────────────────────────────
 section('2. Dados Bancários')
-field('IBAN', 'PT50 XXXX XXXX XXXX XXXX X')
+field('IBAN',      'PT50 0007 0628 0000 2020 0076 9')
+field('BIC/SWIFT', 'BESCPTPL')
 y += 4
 
 // ── Secção 3 — Contactos por Departamento ───────────────────────────────────
