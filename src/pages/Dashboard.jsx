@@ -15,6 +15,18 @@ function TrashIcon() {
   )
 }
 
+const LANG_BADGE = {
+  pt: { label: 'PT', cls: 'lang-badge--pt' },
+  en: { label: 'EN', cls: 'lang-badge--en' },
+  es: { label: 'ES', cls: 'lang-badge--es' },
+}
+
+function LangBadge({ lang }) {
+  const key = (lang ?? 'pt').toLowerCase()
+  const { label, cls } = LANG_BADGE[key] ?? LANG_BADGE.pt
+  return <span className={`lang-badge ${cls}`}>{label}</span>
+}
+
 const STATUS_MAP = {
   pending:   { label: 'Pendente',  cls: 'badge-pending' },
   opened:    { label: 'Aberto',    cls: 'badge-opened' },
@@ -189,7 +201,7 @@ export default function Dashboard() {
                   const s = STATUS_MAP[link.status] ?? { label: link.status, cls: '' }
                   return (
                     <tr key={link.id}>
-                      <td>{link.commercial_name}</td>
+                      <td><span className="td-name-wrap">{link.commercial_name}<LangBadge lang={link.language} /></span></td>
                       <td className="td-vendor">{link.vendor_name ?? '—'}</td>
                       <td>{formatDate(link.created_at)}</td>
                       <td>{formatDate(link.expires_at)}</td>
@@ -222,7 +234,7 @@ export default function Dashboard() {
                 <div key={link.id} className="link-card">
                   <div className="link-card-top">
                     <div>
-                      <p className="link-card-name">{link.commercial_name}</p>
+                      <p className="link-card-name">{link.commercial_name}<LangBadge lang={link.language} /></p>
                       {link.vendor_name && (
                         <p className="link-card-company">Vendedor: {link.vendor_name}</p>
                       )}
