@@ -1,6 +1,6 @@
 export const translations = {
   pt: {
-    appTagline: "UpFlow — Recolha de Dados Cadastrais",
+    appTagline: "UpFlow — Portal de Atualização de Dados de Clientes",
     downloadSummary: "Descarregar Resumo da Submissão",
     billingTitle: "Faturação",
     rgpdTitle: "Consentimento RGPD",
@@ -48,9 +48,10 @@ export const translations = {
     no: "Não",
     successTitle: "Obrigado!",
     successText: "Os seus dados foram submetidos com sucesso. A equipa da Gráfica Ideal irá analisar a informação fornecida.",
+    copyright: "© 2026 Gráfica Ideal de Águeda — Indústrias Gráficas, SA. Todos os direitos reservados.",
   },
   en: {
-    appTagline: "UpFlow — Customer Data Collection",
+    appTagline: "UpFlow — Customer Data Update Portal",
     downloadSummary: "Download Submission Summary",
     billingTitle: "Billing",
     rgpdTitle: "GDPR Consent",
@@ -98,9 +99,10 @@ export const translations = {
     no: "No",
     successTitle: "Thank you!",
     successText: "Your details have been successfully submitted. The Gráfica Ideal team will review the information provided.",
+    copyright: "© 2026 Gráfica Ideal de Águeda — Indústrias Gráficas, SA. All rights reserved.",
   },
   es: {
-    appTagline: "UpFlow — Recogida de Datos de Clientes",
+    appTagline: "UpFlow — Portal de Actualización de Datos de Clientes",
     downloadSummary: "Descargar Resumen del Envío",
     billingTitle: "Facturación",
     rgpdTitle: "Consentimiento RGPD",
@@ -148,5 +150,6 @@ export const translations = {
     no: "No",
     successTitle: "¡Gracias!",
     successText: "Sus datos han sido enviados correctamente. El equipo de Gráfica Ideal revisará la información proporcionada.",
+    copyright: "© 2026 Gráfica Ideal de Águeda — Indústrias Gráficas, SA. Todos los derechos reservados.",
   },
 }

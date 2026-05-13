@@ -153,6 +153,7 @@ export default function FormPage() {
             </svg>
             {t.downloadPdf}
           </a>
+          <p style={{ fontSize: '11px', color: '#8d9190', textAlign: 'center', marginTop: '8px' }}>{t.copyright}</p>
         </div>
       </div>
     </div>
