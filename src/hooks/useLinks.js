@@ -40,7 +40,7 @@ export async function createLink(commercialName, expiresAt, vendorId, vendorName
 export async function getMyLinks() {
   const { data, error } = await supabase
     .from('upflow_links')
-    .select('id, commercial_name, created_at, expires_at, status, token, vendor_id, vendor_name, opened_at')
+    .select('id, commercial_name, created_at, expires_at, status, token, vendor_id, vendor_name, opened_at, language')
     .order('created_at', { ascending: false })
 
   if (error) throw error
@@ -50,7 +50,7 @@ export async function getMyLinks() {
 export async function getAllLinks() {
   const { data, error } = await supabase
     .from('upflow_links')
-    .select('id, commercial_name, created_at, expires_at, status, token, vendor_id, vendor_name, opened_at')
+    .select('id, commercial_name, created_at, expires_at, status, token, vendor_id, vendor_name, opened_at, language')
     .order('created_at', { ascending: false })
 
   if (error) throw error
