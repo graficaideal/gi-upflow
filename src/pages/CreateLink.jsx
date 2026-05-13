@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { createLink, getVendors } from '../hooks/useLinks'
+import { translations } from '../utils/translations'
 import './CreateLink.css'
 
 function CopyIcon() {
@@ -30,21 +31,10 @@ function MailIcon() {
   )
 }
 
-function openMailto(formUrl) {
-  const subject = 'Dados Cadastrais — Gráfica Ideal de Águeda'
-  const body = `Exmo(a). Senhor(a),
-
-A Gráfica Ideal de Águeda vem por este meio solicitar o preenchimento/atualização dos vossos dados cadastrais, essenciais para a manutenção de uma relação comercial eficiente e em conformidade com o Regulamento Geral sobre a Proteção de Dados (RGPD).
-
-Para proceder ao preenchimento, basta aceder ao seguinte link:
-
-${formUrl}
-
-O processo é simples, rápido e seguro. Após a submissão, os vossos dados ficarão registados na nossa base de dados e serão utilizados exclusivamente para fins comerciais inerentes à nossa relação.
-
-Caso tenham alguma dúvida, não hesitem em contactar-nos.
-
-Com os melhores cumprimentos,`
+function openMailto(formUrl, language = 'pt') {
+  const t = translations[language] ?? translations.pt
+  const subject = t.emailSubject
+  const body = t.emailBody.replace('[LINK]', formUrl)
   window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 }
 
@@ -62,6 +52,7 @@ function getDefaultExpiry() {
 
 export default function CreateLink() {
   const [token, setToken] = useState(null)
+  const [linkLanguage, setLinkLanguage] = useState('pt')
   const [copied, setCopied] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [vendors, setVendors] = useState([])
@@ -94,6 +85,7 @@ export default function CreateLink() {
       const vendor = vendors.find(v => v.id === vendor_id)
       const data = await createLink(commercial_name, expires_at, vendor_id, vendor?.name ?? '', language)
       setToken(data.token)
+      setLinkLanguage(language)
     } catch {
       setSubmitError('Erro ao criar link. Verifica a ligação e tenta novamente.')
     }
@@ -194,7 +186,7 @@ export default function CreateLink() {
                 {copied ? <CheckIcon /> : <CopyIcon />}
                 {copied ? 'Copiado!' : 'Copiar'}
               </button>
-              <button onClick={() => openMailto(formUrl)} className="btn-copy">
+              <button onClick={() => openMailto(formUrl, linkLanguage)} className="btn-copy">
                 <MailIcon />
                 Enviar por Email
               </button>
