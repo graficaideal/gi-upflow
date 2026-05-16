@@ -34,6 +34,32 @@ const STATUS_MAP = {
   expired:   { label: 'Expirado',  cls: 'badge-expired' },
 }
 
+const STATUS_ORDER = { pending: 0, opened: 1, completed: 2, expired: 3 }
+
+const SORT_OPTIONS = [
+  { value: 'created_at',      label: 'Data de Criação' },
+  { value: 'commercial_name', label: 'Designação Comercial' },
+  { value: 'vendor_name',     label: 'Vendedor' },
+  { value: 'expires_at',      label: 'Prazo' },
+  { value: 'opened_at',       label: 'Aberto em' },
+  { value: 'status',          label: 'Estado' },
+]
+
+function SortTh({ column, current, direction, onSort, children }) {
+  const active = column === current
+  return (
+    <th
+      className={`th-sortable${active ? ' th-sortable--active' : ''}`}
+      onClick={() => onSort(column)}
+    >
+      {children}
+      <span className={`sort-arrow${active ? ' sort-arrow--visible' : ''}`}>
+        {direction === 'asc' ? '↑' : '↓'}
+      </span>
+    </th>
+  )
+}
+
 function formatDate(str) {
   if (!str) return '—'
   return new Date(str).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })
@@ -71,6 +97,8 @@ export default function Dashboard() {
   const [hideCompleted, setHideCompleted] = useState(
     () => localStorage.getItem('upflow-hide-completed') === 'true'
   )
+  const [sortColumn, setSortColumn] = useState('created_at')
+  const [sortDirection, setSortDirection] = useState('desc')
 
   function toggleHideCompleted() {
     setHideCompleted(prev => {
@@ -78,6 +106,15 @@ export default function Dashboard() {
       localStorage.setItem('upflow-hide-completed', String(next))
       return next
     })
+  }
+
+  function handleSort(column) {
+    if (column === sortColumn) {
+      setSortDirection(d => d === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortColumn(column)
+      setSortDirection('asc')
+    }
   }
 
   async function handleDeleteConfirm(id) {
@@ -100,6 +137,42 @@ export default function Dashboard() {
     const notHidden = !(hideCompleted && l.status === 'completed')
     return statusOk && vendorOk && notHidden
   }), [links, statusFilter, vendorFilter, hideCompleted])
+
+  const sorted = useMemo(() => {
+    const dir = sortDirection === 'asc' ? 1 : -1
+    return [...filtered].sort((a, b) => {
+      switch (sortColumn) {
+        case 'commercial_name':
+          return dir * (a.commercial_name ?? '').localeCompare(b.commercial_name ?? '', 'pt')
+        case 'vendor_name':
+          return dir * (a.vendor_name ?? '').localeCompare(b.vendor_name ?? '', 'pt')
+        case 'created_at':
+        case 'expires_at': {
+          const av = a[sortColumn] ? new Date(a[sortColumn]).getTime() : null
+          const bv = b[sortColumn] ? new Date(b[sortColumn]).getTime() : null
+          if (av === null && bv === null) return 0
+          if (av === null) return 1
+          if (bv === null) return -1
+          return dir * (av - bv)
+        }
+        case 'opened_at': {
+          const av = a.opened_at ? new Date(a.opened_at).getTime() : null
+          const bv = b.opened_at ? new Date(b.opened_at).getTime() : null
+          if (av === null && bv === null) return 0
+          if (av === null) return 1
+          if (bv === null) return -1
+          return dir * (av - bv)
+        }
+        case 'status': {
+          const ao = STATUS_ORDER[a.status] ?? 99
+          const bo = STATUS_ORDER[b.status] ?? 99
+          return dir * (ao - bo)
+        }
+        default:
+          return 0
+      }
+    })
+  }, [filtered, sortColumn, sortDirection])
 
   const stats = {
     total:     links.length,
@@ -187,17 +260,17 @@ export default function Dashboard() {
             <table className="links-table">
               <thead>
                 <tr>
-                  <th>Designação Comercial</th>
-                  <th>Vendedor</th>
-                  <th>Criado em</th>
-                  <th>Prazo</th>
-                  <th>Aberto em</th>
-                  <th>Estado</th>
+                  <SortTh column="commercial_name" current={sortColumn} direction={sortDirection} onSort={handleSort}>Designação Comercial</SortTh>
+                  <SortTh column="vendor_name"     current={sortColumn} direction={sortDirection} onSort={handleSort}>Vendedor</SortTh>
+                  <SortTh column="created_at"      current={sortColumn} direction={sortDirection} onSort={handleSort}>Criado em</SortTh>
+                  <SortTh column="expires_at"      current={sortColumn} direction={sortDirection} onSort={handleSort}>Prazo</SortTh>
+                  <SortTh column="opened_at"       current={sortColumn} direction={sortDirection} onSort={handleSort}>Aberto em</SortTh>
+                  <SortTh column="status"          current={sortColumn} direction={sortDirection} onSort={handleSort}>Estado</SortTh>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(link => {
+                {sorted.map(link => {
                   const s = STATUS_MAP[link.status] ?? { label: link.status, cls: '' }
                   return (
                     <tr key={link.id}>
@@ -227,8 +300,28 @@ export default function Dashboard() {
             </table>
           </div>
 
+          <div className="mobile-sort-controls">
+            <span className="mobile-sort-label">Ordenar por</span>
+            <select
+              className="filter-select"
+              value={sortColumn}
+              onChange={e => { setSortColumn(e.target.value); setSortDirection('asc') }}
+            >
+              {SORT_OPTIONS.map(o => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+            <button
+              className="mobile-sort-dir"
+              onClick={() => setSortDirection(d => d === 'asc' ? 'desc' : 'asc')}
+              aria-label="Alternar direção de ordenação"
+            >
+              {sortDirection === 'asc' ? '↑' : '↓'}
+            </button>
+          </div>
+
           <div className="links-cards">
-            {filtered.map(link => {
+            {sorted.map(link => {
               const s = STATUS_MAP[link.status] ?? { label: link.status, cls: '' }
               return (
                 <div key={link.id} className="link-card">

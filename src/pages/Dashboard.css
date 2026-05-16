@@ -91,3 +91,74 @@
   gap: 16px;
   color: var(--color-text-muted);
 }
+
+/* ── Sortable table headers ────────────────────────────────────────────────── */
+.th-sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: background 0.12s;
+}
+
+.th-sortable:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+:root.dark .th-sortable:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.th-sortable--active {
+  color: var(--color-text);
+}
+
+.sort-arrow {
+  display: inline-block;
+  margin-left: 4px;
+  color: #e0cb4b;
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+.sort-arrow--visible {
+  opacity: 1;
+}
+
+/* ── Mobile sort controls ──────────────────────────────────────────────────── */
+.mobile-sort-controls {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mobile-sort-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mobile-sort-dir {
+  padding: 0 12px;
+  height: 36px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: #e0cb4b;
+  font-size: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.12s;
+}
+
+.mobile-sort-dir:hover {
+  background: rgba(224, 203, 75, 0.08);
+}
+
+@media (max-width: 768px) {
+  .mobile-sort-controls {
+    display: flex;
+  }
+}
