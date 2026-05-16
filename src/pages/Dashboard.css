@@ -72,9 +72,9 @@
   flex-shrink: 0;
 }
 
-.lang-badge--pt { background: #4a5568; }
-.lang-badge--en { background: #2b4a7a; }
-.lang-badge--es { background: #7a2b2b; }
+.lang-badge--pt { background: #1a5276; }
+.lang-badge--en { background: #1e8449; }
+.lang-badge--es { background: #922b21; }
 
 .link-card-name {
   display: flex;
