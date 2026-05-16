@@ -103,6 +103,10 @@ export default function CreateLink() {
     setToken(null)
     setCopied(false)
     reset()
+    try {
+      const id = JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id
+      if (id) setValue('vendor_id', id)
+    } catch {}
   }
 
   return (
