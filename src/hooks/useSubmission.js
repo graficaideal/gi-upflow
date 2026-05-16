@@ -3,7 +3,7 @@ import { supabase } from '../utils/supabase'
 export async function submitForm(token, formData) {
   const { data: link, error: linkError } = await supabase
     .from('upflow_links')
-    .select('id, status, expires_at')
+    .select('id, status, expires_at, commercial_name, vendor_id')
     .eq('token', token)
     .single()
 
@@ -70,10 +70,23 @@ export async function submitForm(token, formData) {
     .insert({ submission_id: sid, accepted: true })
   if (rgpdError) throw rgpdError
 
+  const submittedAt = new Date().toISOString()
+
   const { error: updateError } = await supabase
     .from('upflow_links')
-    .update({ status: 'completed', submitted_at: new Date().toISOString() })
+    .update({ status: 'completed', submitted_at: submittedAt })
     .eq('id', link.id)
   if (updateError) throw updateError
+
+  try {
+    await supabase.functions.invoke('notify-submission', {
+      body: {
+        link_id:         link.id,
+        commercial_name: link.commercial_name,
+        vendor_id:       link.vendor_id,
+        submitted_at:    submittedAt,
+      },
+    })
+  } catch {}
 }
 

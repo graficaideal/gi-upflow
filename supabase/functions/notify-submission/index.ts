@@ -1,8 +1,8 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const RESEND_API_KEY      = Deno.env.get('RESEND_API_KEY') ?? ''
-const SUPABASE_URL        = Deno.env.get('SUPABASE_URL') ?? ''
+const RESEND_API_KEY       = Deno.env.get('RESEND_API_KEY') ?? ''
+const SUPABASE_URL         = Deno.env.get('SUPABASE_URL') ?? ''
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 
 const CORS = {
@@ -17,15 +17,22 @@ function json(body: unknown, status = 200) {
   })
 }
 
-function emailHtml(clientName: string, companyName: string, linkId: string): string {
-  const detailUrl = `https://upflow.graficaideal.pt/links/${linkId}`
+function formatDatePt(iso: string): string {
+  const d = new Date(iso)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}, ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+function emailHtml(commercialName: string, vendorName: string, submittedAt: string, linkId: string): string {
+  const detailUrl = `https://up.graficaideal.pt/links/${linkId}`
+  const submittedFormatted = formatDatePt(submittedAt)
 
   return `<!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulário preenchido</title>
+  <title>Formulário concluído</title>
 </head>
 <body style="margin:0;padding:0;background:#f5f5f5;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:40px 0;">
@@ -45,17 +52,34 @@ function emailHtml(clientName: string, companyName: string, linkId: string): str
           <!-- Body -->
           <tr>
             <td style="background:#ffffff;padding:36px 40px 32px;border-left:1px solid #e4e6e8;border-right:1px solid #e4e6e8;">
-              <h1 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#333F48;">
-                Formulário preenchido
+              <h1 style="margin:0 0 24px;font-size:22px;font-weight:700;color:#333F48;">
+                Formulário preenchido com sucesso
               </h1>
-              <p style="margin:0 0 24px;font-size:15px;color:#8d9190;line-height:1.5;">
-                O cliente <strong style="color:#333F48;">${clientName}</strong>
-                da empresa <strong style="color:#333F48;">${companyName}</strong>
-                submeteu os seus dados.
-              </p>
+
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                <tr>
+                  <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;">
+                    <span style="font-size:13px;color:#8d9190;font-weight:500;display:block;margin-bottom:2px;">Empresa</span>
+                    <span style="font-size:15px;color:#333F48;font-weight:600;">${commercialName}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;">
+                    <span style="font-size:13px;color:#8d9190;font-weight:500;display:block;margin-bottom:2px;">Vendedor</span>
+                    <span style="font-size:15px;color:#333F48;font-weight:600;">${vendorName}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 0;">
+                    <span style="font-size:13px;color:#8d9190;font-weight:500;display:block;margin-bottom:2px;">Data de submissão</span>
+                    <span style="font-size:15px;color:#333F48;font-weight:600;">${submittedFormatted}</span>
+                  </td>
+                </tr>
+              </table>
+
               <a href="${detailUrl}"
                  style="display:inline-block;background:#e0cb4b;color:#333F48;font-size:14px;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:8px;">
-                Ver dados
+                Ver detalhes
               </a>
             </td>
           </tr>
@@ -64,7 +88,7 @@ function emailHtml(clientName: string, companyName: string, linkId: string): str
           <tr>
             <td style="background:#f5f5f5;border:1px solid #e4e6e8;border-top:none;border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;">
               <p style="margin:0;font-size:12px;color:#8d9190;">
-                Gráfica Ideal de Águeda &nbsp;·&nbsp; Este email foi gerado automaticamente pelo UpFlow.
+                Gráfica Ideal de Águeda — Indústrias Gráficas, SA
               </p>
             </td>
           </tr>
@@ -87,10 +111,10 @@ serve(async (req) => {
   }
 
   let body: {
-    vendedor_id: string
-    client_name: string
-    company_name: string
     link_id: string
+    commercial_name: string
+    vendor_id: string
+    submitted_at: string
   }
 
   try {
@@ -99,32 +123,25 @@ serve(async (req) => {
     return json({ error: 'Invalid JSON body' }, 400)
   }
 
-  const { vendedor_id, client_name, company_name, link_id } = body
+  const { link_id, commercial_name, vendor_id, submitted_at } = body
 
-  if (!vendedor_id || !client_name || !company_name || !link_id) {
+  if (!link_id || !commercial_name || !vendor_id || !submitted_at) {
     return json({ error: 'Missing required fields' }, 400)
   }
 
-  // Resolve vendedor email + name via service role (auth.users + upflow_profiles)
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
-  const { data: userData, error: userError } = await admin.auth.admin.getUserById(vendedor_id)
-  if (userError || !userData?.user?.email) {
-    console.error('Could not resolve vendedor:', userError)
-    return json({ error: 'Vendedor not found' }, 404)
-  }
-
-  const vendedor_email = userData.user.email
-
-  const { data: profile } = await admin
-    .from('upflow_profiles')
-    .select('full_name')
-    .eq('id', vendedor_id)
+  const { data: vendor, error: vendorError } = await admin
+    .from('upflow_vendors')
+    .select('name, email')
+    .eq('id', vendor_id)
     .maybeSingle()
 
-  const vendedor_name = profile?.full_name ?? vendedor_email
+  if (vendorError || !vendor?.email) {
+    console.error('Could not resolve vendor:', vendorError)
+    return json({ error: 'Vendor not found' }, 404)
+  }
 
-  // Send email via Resend
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -132,10 +149,11 @@ serve(async (req) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'UpFlow <geral@graficaideal.pt>',
-      to: [vendedor_email],
-      subject: `[UpFlow] ${company_name} preencheu o formulário`,
-      html: emailHtml(client_name, company_name, link_id),
+      from: 'UpFlow <noreply@graficaideal.pt>',
+      to: [vendor.email],
+      cc: ['informatica@graficaideal.pt'],
+      subject: `[UpFlow] Formulário concluído — ${commercial_name}`,
+      html: emailHtml(commercial_name, vendor.name, submitted_at, link_id),
     }),
   })
 
