@@ -15,16 +15,20 @@ function TrashIcon() {
   )
 }
 
-const LANG_BADGE = {
-  pt: { label: 'PT', cls: 'lang-badge--pt' },
-  en: { label: 'EN', cls: 'lang-badge--en' },
-  es: { label: 'ES', cls: 'lang-badge--es' },
+const LANG_BADGE_STYLE = {
+  pt: { backgroundColor: '#1a5276', color: '#ffffff' },
+  en: { backgroundColor: '#1e8449', color: '#ffffff' },
+  es: { backgroundColor: '#922b21', color: '#ffffff' },
 }
 
 function LangBadge({ lang }) {
   const key = (lang ?? 'pt').toLowerCase()
-  const { label, cls } = LANG_BADGE[key] ?? LANG_BADGE.pt
-  return <span className={`lang-badge ${cls}`}>{label}</span>
+  const style = LANG_BADGE_STYLE[key] ?? LANG_BADGE_STYLE.pt
+  return (
+    <span style={{ ...style, fontSize: '10px', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold', flexShrink: 0 }}>
+      {key.toUpperCase()}
+    </span>
+  )
 }
 
 const STATUS_MAP = {
