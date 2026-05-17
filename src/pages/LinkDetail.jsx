@@ -150,7 +150,7 @@ async function downloadPDF(link) {
     doc.setFont('DMSans', 'bold')
     doc.setFontSize(8.5)
     doc.setTextColor(100, 110, 120)
-    doc.text(`${label}:`, margin + 2, y)
+    doc.text(`${label.toLowerCase()}:`, margin + 2, y)
     doc.setFont('DMSans', 'normal')
     doc.setTextColor(30, 35, 40)
     doc.text(value || '—', margin + 58, y)
