@@ -177,6 +177,9 @@ export default function Settings() {
   const [editingId, setEditingId]       = useState(null)
   const [editForm, setEditForm]         = useState({ name: '', email: '' })
   const [vendorSaving, setVendorSaving] = useState(false)
+  const [deletingVendorId, setDeletingVendorId] = useState(null)
+  const [deleteHasLinks, setDeleteHasLinks]     = useState(false)
+  const [deleteCheckLoading, setDeleteCheckLoading] = useState(false)
 
   useEffect(() => { loadVendors() }, [])
 
@@ -281,6 +284,31 @@ export default function Settings() {
     if (error) { setVendorError(error.message); return }
     setEditingId(null)
     loadVendors()
+  }
+
+  async function handleDeleteClick(vendor) {
+    setDeletingVendorId(vendor.id)
+    setDeleteCheckLoading(true)
+    const { count, error } = await supabase
+      .from('upflow_links')
+      .select('id', { count: 'exact', head: true })
+      .eq('vendor_id', vendor.id)
+    setDeleteCheckLoading(false)
+    if (error) { setVendorError(error.message); setDeletingVendorId(null); return }
+    setDeleteHasLinks(count > 0)
+  }
+
+  async function handleDeleteConfirm(id) {
+    setVendorError('')
+    const { error } = await supabase.from('upflow_vendors').delete().eq('id', id)
+    if (error) { setVendorError(error.message); return }
+    setDeletingVendorId(null)
+    setVendors(prev => prev.filter(v => v.id !== id))
+  }
+
+  function handleDeleteCancel() {
+    setDeletingVendorId(null)
+    setDeleteHasLinks(false)
   }
 
   async function handleToggleActive(vendor) {
@@ -428,6 +456,40 @@ export default function Settings() {
                       <span className="vendor-name">{v.name}</span>
                       {v.email && <span className="vendor-email">{v.email}</span>}
                     </div>
+                    {deletingVendorId === v.id ? (
+                      <div className="vendor-delete-confirm">
+                        {deleteCheckLoading ? (
+                          <span className="vendor-delete-checking">A verificar…</span>
+                        ) : deleteHasLinks ? (
+                          <>
+                            <span className="vendor-delete-blocked">
+                              Este vendedor tem links associados. Sugerimos inativar em vez de eliminar.
+                            </span>
+                            <div className="vendor-form-actions">
+                              <button
+                                className={`btn-vendor-toggle${v.active ? ' btn-vendor-toggle--deactivate' : ' btn-vendor-toggle--activate'}`}
+                                onClick={() => { handleToggleActive(v); handleDeleteCancel() }}
+                              >
+                                {v.active ? 'Inativar' : 'Já inativo'}
+                              </button>
+                              <button className="btn-vendor-cancel" onClick={handleDeleteCancel}>Cancelar</button>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <span className="vendor-delete-blocked" style={{ color: '#c0392b' }}>
+                              Confirmar eliminação de <strong>{v.name}</strong>?
+                            </span>
+                            <div className="vendor-form-actions">
+                              <button className="btn-vendor-delete-confirm" onClick={() => handleDeleteConfirm(v.id)}>
+                                Eliminar
+                              </button>
+                              <button className="btn-vendor-cancel" onClick={handleDeleteCancel}>Cancelar</button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ) : (
                     <div className="vendor-actions">
                       <span className={`vendor-status${v.active ? ' vendor-status--active' : ' vendor-status--inactive'}`}>
                         {v.active ? 'Ativo' : 'Inativo'}
@@ -439,7 +501,11 @@ export default function Settings() {
                       >
                         {v.active ? 'Desativar' : 'Ativar'}
                       </button>
+                      <button className="btn-vendor-delete" onClick={() => handleDeleteClick(v)}>
+                        Eliminar
+                      </button>
                     </div>
+                    )}
                   </>
                 )}
               </div>
