@@ -9,6 +9,7 @@ import CreateLink from './pages/CreateLink'
 import LinkDetail from './pages/LinkDetail'
 import FormPage from './pages/form/FormPage'
 import Authorizations from './pages/Authorizations'
+import Settings from './pages/Settings'
 
 // ── Catches render errors and shows a readable message instead of blank page
 class ErrorBoundary extends Component {
@@ -80,6 +81,7 @@ export default function App() {
             <Route path="/links/create" element={<CreateLink />} />
             <Route path="/links/:id" element={<LinkDetail />} />
             <Route path="/authorizations" element={<Authorizations />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
 
           <Route element={<ProtectedLayout adminOnly />}>
