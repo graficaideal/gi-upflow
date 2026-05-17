@@ -176,7 +176,7 @@ export default function CreateLink() {
 
           {submitError && <p className="form-error form-error--global">{submitError}</p>}
 
-          <button type="submit" className="btn-primary btn-submit" disabled={isSubmitting}>
+          <button type="submit" className="btn-primary btn-submit" disabled={isSubmitting || !!token}>
             {isSubmitting ? 'A criar…' : 'Gerar Link'}
           </button>
         </form>
