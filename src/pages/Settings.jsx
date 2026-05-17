@@ -98,6 +98,47 @@ async function executeRestore(data, onProgress) {
   }
 }
 
+// ── Icons ─────────────────────────────────────────────────────────────────────
+
+function DatabaseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" />
+      <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" />
+    </svg>
+  )
+}
+
+function DownloadCloudIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="8 17 12 21 16 17" />
+      <line x1="12" y1="12" x2="12" y2="21" />
+      <path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29" />
+    </svg>
+  )
+}
+
+function UploadIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+    </svg>
+  )
+}
+
+function RotateCCWIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="1 4 1 10 7 10" />
+      <path d="M3.51 15a9 9 0 102.13-9.36L1 10" />
+    </svg>
+  )
+}
+
 // ── Vendor icons ─────────────────────────────────────────────────────────────
 
 function PencilIcon() {
@@ -379,55 +420,75 @@ export default function Settings() {
 
       {/* Card 1 — Backup */}
       <div className="settings-card">
-        <h2 className="settings-card-title">Backup de Dados</h2>
-        <p className="settings-card-desc">
-          Exporta todos os dados da aplicação para um ficheiro JSON. Guarda este ficheiro num local seguro.
-        </p>
-        {backupError && <p className="settings-error">{backupError}</p>}
-        {backupDone  && <p className="settings-success">✓ Backup efetuado com sucesso.</p>}
-        <button className="btn-backup" onClick={handleBackup} disabled={backupLoading}>
-          {backupLoading ? 'A exportar…' : 'Fazer Backup'}
-        </button>
+        <div className="action-row">
+          <div className="action-row-icon action-row-icon--yellow">
+            <DatabaseIcon />
+          </div>
+          <div className="action-row-info">
+            <span className="action-row-title">Backup de Dados</span>
+            <span className="action-row-desc">Exporta todos os dados para JSON. Guarda num local seguro.</span>
+          </div>
+          <button className="action-btn" onClick={handleBackup} disabled={backupLoading}>
+            <DownloadCloudIcon />
+            {backupLoading ? 'A exportar…' : 'Fazer Backup'}
+          </button>
+        </div>
+        {backupError && <p className="settings-feedback settings-feedback--error">{backupError}</p>}
+        {backupDone  && <p className="settings-feedback settings-feedback--success">✓ Backup efetuado com sucesso.</p>}
       </div>
 
       {/* Card 2 — Restore */}
       <div className="settings-card">
-        <h2 className="settings-card-title">Restaurar Backup</h2>
-        <p className="settings-restore-warning">
-          ⚠️ Esta operação vai substituir todos os dados existentes. Esta ação é irreversível.
-        </p>
-        <label className="settings-file-label">Selecionar ficheiro de backup:</label>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".json,application/json"
-          className="settings-file-input"
-          onChange={handleFileChange}
-        />
-        {restoreError && <p className="settings-error">{restoreError}</p>}
+        <div className="action-row">
+          <div className="action-row-icon action-row-icon--red">
+            <RotateCCWIcon />
+          </div>
+          <div className="action-row-info">
+            <span className="action-row-title">Restaurar Backup</span>
+            <span className="action-row-desc action-row-desc--warn">
+              Substituirá todos os dados existentes. Esta ação é irreversível.
+            </span>
+          </div>
+          <label className="action-btn action-btn--secondary" htmlFor="restore-file-input">
+            <UploadIcon />
+            Selecionar ficheiro
+          </label>
+          <input
+            id="restore-file-input"
+            ref={fileInputRef}
+            type="file"
+            accept=".json,application/json"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+        </div>
+
+        {restoreError && <p className="settings-feedback settings-feedback--error">{restoreError}</p>}
+
         {restoreData && (
           <div className="restore-summary">
-            <p className="restore-summary-title">Resumo do ficheiro</p>
-            <div className="restore-summary-item">
-              <span>Data de exportação</span>
-              <span>{new Date(restoreData.exported_at).toLocaleString('pt-PT')}</span>
+            <div className="restore-summary-header">
+              <span>Exportado em {new Date(restoreData.exported_at).toLocaleString('pt-PT')}</span>
             </div>
-            {Object.entries(restoreData.data).map(([key, rows]) => (
-              <div key={key} className="restore-summary-item">
-                <span>{key}</span>
-                <span>{rows.length} registos</span>
-              </div>
-            ))}
+            <div className="restore-summary-rows">
+              {Object.entries(restoreData.data).map(([key, rows]) => (
+                <div key={key} className="restore-summary-row">
+                  <span className="restore-summary-key">{key.replace('upflow_', '')}</span>
+                  <span className="restore-summary-count">{rows.length}</span>
+                </div>
+              ))}
+            </div>
+            <div className="restore-summary-footer">
+              {restoreDone
+                ? <span className="settings-feedback settings-feedback--success" style={{ border: 'none', padding: 0, background: 'none' }}>✓ Restauro concluído com sucesso.</span>
+                : <button className="action-btn action-btn--danger" disabled={restoreLoading} onClick={() => setShowRestoreModal(true)}>
+                    <RotateCCWIcon />
+                    Restaurar
+                  </button>
+              }
+            </div>
           </div>
         )}
-        {restoreDone && <p className="settings-success">✓ Restauro concluído com sucesso.</p>}
-        <button
-          className="btn-restore"
-          disabled={!restoreData || restoreLoading}
-          onClick={() => setShowRestoreModal(true)}
-        >
-          Restaurar
-        </button>
       </div>
 
       {/* Card 3 — Vendors */}
