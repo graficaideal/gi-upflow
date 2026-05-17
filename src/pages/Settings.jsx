@@ -98,6 +98,55 @@ async function executeRestore(data, onProgress) {
   }
 }
 
+// ── Vendor icons ─────────────────────────────────────────────────────────────
+
+function PencilIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  )
+}
+
+function EyeOffIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" />
+      <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" />
+      <line x1="1" y1="1" x2="23" y2="23" />
+    </svg>
+  )
+}
+
+function EyeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  )
+}
+
+function TrashIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+      <path d="M10 11v6M14 11v6" />
+      <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+    </svg>
+  )
+}
+
+const AVATAR_PALETTE = ['#4a6fa5', '#2e7d5e', '#7b5ea7', '#b5451b', '#2c7873', '#5c6bc0']
+
+function avatarColor(name) {
+  let h = 0
+  for (const c of (name || '?')) h = (h * 31 + c.charCodeAt(0)) % AVATAR_PALETTE.length
+  return AVATAR_PALETTE[Math.abs(h)]
+}
+
 // ── Restore modal ─────────────────────────────────────────────────────────────
 
 function generateCode() {
@@ -427,13 +476,16 @@ export default function Settings() {
               <p className="settings-empty">Nenhum vendedor encontrado.</p>
             )}
             {vendors.map(v => (
-              <div key={v.id} className={`vendor-row${v.active ? '' : ' vendor-row--inactive'}`}>
+              <div key={v.id} className={`vendor-row${!v.active ? ' vendor-row--inactive' : ''}${deletingVendorId === v.id ? ' vendor-row--confirming' : ''}`}>
+
                 {editingId === v.id ? (
-                  <div className="vendor-inline-form vendor-inline-form--edit">
+                  /* ── Edit form ── */
+                  <div className="vendor-edit-form">
                     <input
                       className="vendor-input"
                       placeholder="Nome *"
                       value={editForm.name}
+                      autoFocus
                       onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
                     />
                     <input
@@ -443,68 +495,74 @@ export default function Settings() {
                       value={editForm.email}
                       onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))}
                     />
-                    <div className="vendor-form-actions">
-                      <button className="btn-vendor-save" onClick={() => handleSaveEdit(v.id)} disabled={vendorSaving || !editForm.name.trim()}>
+                    <div className="vendor-edit-actions">
+                      <button className="vendor-edit-save" onClick={() => handleSaveEdit(v.id)} disabled={vendorSaving || !editForm.name.trim()}>
                         {vendorSaving ? 'A guardar…' : 'Guardar'}
                       </button>
-                      <button className="btn-vendor-cancel" onClick={() => setEditingId(null)}>Cancelar</button>
+                      <button className="vendor-edit-cancel" onClick={() => setEditingId(null)}>Cancelar</button>
                     </div>
                   </div>
                 ) : (
+                  /* ── Normal row ── */
                   <>
+                    <div className="vendor-avatar" style={{ background: avatarColor(v.name) }}>
+                      {v.name.charAt(0).toUpperCase()}
+                    </div>
+
                     <div className="vendor-info">
                       <span className="vendor-name">{v.name}</span>
                       {v.email && <span className="vendor-email">{v.email}</span>}
                     </div>
+
                     {deletingVendorId === v.id ? (
-                      <div className="vendor-delete-confirm">
+                      /* ── Delete confirm bar ── */
+                      <div className="vendor-confirm-bar">
                         {deleteCheckLoading ? (
-                          <span className="vendor-delete-checking">A verificar…</span>
+                          <span className="vendor-confirm-label">A verificar…</span>
                         ) : deleteHasLinks ? (
                           <>
-                            <span className="vendor-delete-blocked">
-                              Este vendedor tem links associados. Sugerimos inativar em vez de eliminar.
+                            <span className="vendor-confirm-label vendor-confirm-label--warn">
+                              ⚠ Tem links — sugerimos inativar
                             </span>
-                            <div className="vendor-form-actions">
-                              <button
-                                className={`btn-vendor-toggle${v.active ? ' btn-vendor-toggle--deactivate' : ' btn-vendor-toggle--activate'}`}
-                                onClick={() => { handleToggleActive(v); handleDeleteCancel() }}
-                              >
-                                {v.active ? 'Inativar' : 'Já inativo'}
-                              </button>
-                              <button className="btn-vendor-cancel" onClick={handleDeleteCancel}>Cancelar</button>
-                            </div>
+                            <button className="vendor-confirm-btn vendor-confirm-btn--warn"
+                              onClick={() => { handleToggleActive(v); handleDeleteCancel() }}>
+                              {v.active ? 'Inativar' : 'Já inativo'}
+                            </button>
+                            <button className="vendor-confirm-dismiss" onClick={handleDeleteCancel}>✕</button>
                           </>
                         ) : (
                           <>
-                            <span className="vendor-delete-blocked" style={{ color: '#c0392b' }}>
-                              Confirmar eliminação de <strong>{v.name}</strong>?
+                            <span className="vendor-confirm-label vendor-confirm-label--danger">
+                              Eliminar <strong>{v.name}</strong>?
                             </span>
-                            <div className="vendor-form-actions">
-                              <button className="btn-vendor-delete-confirm" onClick={() => handleDeleteConfirm(v.id)}>
-                                Eliminar
-                              </button>
-                              <button className="btn-vendor-cancel" onClick={handleDeleteCancel}>Cancelar</button>
-                            </div>
+                            <button className="vendor-confirm-btn vendor-confirm-btn--danger"
+                              onClick={() => handleDeleteConfirm(v.id)}>
+                              Eliminar
+                            </button>
+                            <button className="vendor-confirm-dismiss" onClick={handleDeleteCancel}>✕</button>
                           </>
                         )}
                       </div>
                     ) : (
-                    <div className="vendor-actions">
-                      <span className={`vendor-status${v.active ? ' vendor-status--active' : ' vendor-status--inactive'}`}>
-                        {v.active ? 'Ativo' : 'Inativo'}
-                      </span>
-                      <button className="btn-vendor-edit" onClick={() => startEdit(v)}>Editar</button>
-                      <button
-                        className={`btn-vendor-toggle${v.active ? ' btn-vendor-toggle--deactivate' : ' btn-vendor-toggle--activate'}`}
-                        onClick={() => handleToggleActive(v)}
-                      >
-                        {v.active ? 'Desativar' : 'Ativar'}
-                      </button>
-                      <button className="btn-vendor-delete" onClick={() => handleDeleteClick(v)}>
-                        Eliminar
-                      </button>
-                    </div>
+                      /* ── Action buttons ── */
+                      <div className="vendor-actions">
+                        <span className={`vendor-dot${v.active ? ' vendor-dot--active' : ''}`}
+                          data-tooltip={v.active ? 'Ativo' : 'Inativo'} />
+                        <button className="vendor-btn" data-tooltip="Editar"
+                          onClick={() => startEdit(v)}>
+                          <PencilIcon />
+                        </button>
+                        <button
+                          className={`vendor-btn${v.active ? ' vendor-btn--warn' : ' vendor-btn--success'}`}
+                          data-tooltip={v.active ? 'Desativar' : 'Ativar'}
+                          onClick={() => handleToggleActive(v)}>
+                          {v.active ? <EyeOffIcon /> : <EyeIcon />}
+                        </button>
+                        <button className="vendor-btn vendor-btn--danger" data-tooltip="Eliminar"
+                          onClick={() => handleDeleteClick(v)}>
+                          <TrashIcon />
+                        </button>
+                      </div>
                     )}
                   </>
                 )}
