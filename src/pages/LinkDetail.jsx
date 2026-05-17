@@ -367,7 +367,15 @@ export default function LinkDetail() {
           </div>
           <div className="detail-card-badges">
             <span className={`status-badge ${s.cls}`}>{s.label}</span>
-            <span className="lang-badge">{(link.language ?? 'pt').toUpperCase()}</span>
+            <span
+              className="lang-badge"
+              style={{
+                backgroundColor: { pt: '#1a5276', en: '#1e8449', es: '#922b21' }[link.language ?? 'pt'] ?? '#1a5276',
+                color: '#ffffff',
+              }}
+            >
+              {(link.language ?? 'pt').toUpperCase()}
+            </span>
           </div>
         </div>
 
