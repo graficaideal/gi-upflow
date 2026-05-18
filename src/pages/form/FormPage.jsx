@@ -60,6 +60,7 @@ export default function FormPage() {
     setSubmitError(null)
     try {
       await submitForm(token, finalData)
+      setFormData(finalData)
       setStatus('done')
     } catch (err) {
       setSubmitError(err.message ?? 'Ocorreu um erro. Tente novamente.')

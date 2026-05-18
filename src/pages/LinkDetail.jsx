@@ -328,7 +328,15 @@ export default function LinkDetail() {
 
   async function handleDownloadPDF() {
     setPdfLoading(true)
-    try { await downloadPDF(link) } finally { setPdfLoading(false) }
+    try {
+      console.log('PDF data:', link)
+      await downloadPDF(link)
+    } catch (err) {
+      console.error('Erro ao gerar PDF:', err)
+      alert('Erro ao gerar o PDF. Tenta novamente.')
+    } finally {
+      setPdfLoading(false)
+    }
   }
 
   async function handleMarkEmailSent() {

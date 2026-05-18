@@ -237,6 +237,9 @@ export default function FormSuccess({ t, formData, commercialName }) {
     setPdfLoading(true)
     try {
       await generateSummaryPDF({ formData, t, commercialName })
+    } catch (err) {
+      console.error('Erro ao gerar resumo PDF:', err)
+      alert('Erro ao gerar o PDF. Tenta novamente.')
     } finally {
       setPdfLoading(false)
     }

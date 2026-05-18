@@ -67,7 +67,7 @@ export async function submitForm(token, formData) {
 
   const { error: rgpdError } = await supabase
     .from('upflow_rgpd_consent')
-    .insert({ submission_id: sid, accepted: true })
+    .insert({ submission_id: sid, accepted: true, accepted_at: new Date().toISOString() })
   if (rgpdError) throw rgpdError
 
   const submittedAt = new Date().toISOString()
