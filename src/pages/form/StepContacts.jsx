@@ -126,7 +126,7 @@ export default function StepContacts({ formData, onNext, onBack, t, language }) 
             )}
 
             <div className="fg">
-              <label>{t.email} *</label>
+              <label>{t.contactEmail} *</label>
               <input
                 type="email"
                 className={errors[`${key}_email`] ? 'input-error' : ''}
@@ -142,7 +142,7 @@ export default function StepContacts({ formData, onNext, onBack, t, language }) 
 
             <div className="fg-row">
               <div className="fg">
-                <label>{t.phone}</label>
+                <label>{t.contactPhone}</label>
                 <input
                   placeholder={isPT ? 'XXX XXX XXX' : ''}
                   {...register(`${key}_telefone`)}
@@ -150,7 +150,7 @@ export default function StepContacts({ formData, onNext, onBack, t, language }) 
                 />
               </div>
               <div className="fg">
-                <label>{t.mobile}</label>
+                <label>{t.contactMobile}</label>
                 <input
                   placeholder={isPT ? 'XXX XXX XXX' : ''}
                   {...register(`${key}_telemovel`)}
