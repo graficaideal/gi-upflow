@@ -101,7 +101,7 @@ const pageW = 210
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(13)
   doc.setTextColor(255, 255, 255)
-  doc.text(`Ficha de Cliente — ${link.commercial_name}`, titleX, logoY + 8)
+  doc.text(`ficha de cliente — ${link.commercial_name}`, titleX, logoY + 8)
 
   const submittedStr = link.submitted_at
     ? new Date(link.submitted_at).toLocaleString('pt-PT', {
@@ -112,7 +112,7 @@ const pageW = 210
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
   doc.setTextColor(190, 195, 200)
-  doc.text(`Submetido em: ${submittedStr}`, titleX, logoY + 17)
+  doc.text(`submetido em: ${submittedStr}`, titleX, logoY + 17)
 
   // ── Helpers ──────────────────────────────────────────────
   let y = headerH + 8
@@ -131,7 +131,7 @@ const pageW = 210
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(9.5)
     doc.setTextColor(255, 255, 255)
-    doc.text(title, margin + 4, y + 5.5)
+    doc.text(title.toLowerCase(), margin + 4, y + 5.5)
     y += 12
   }
 
@@ -152,7 +152,7 @@ const pageW = 210
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(9)
     doc.setTextColor(darkR, darkG, darkB)
-    doc.text(text, margin + 2, y)
+    doc.text(text.toLowerCase(), margin + 2, y)
     y += 6.5
   }
 
@@ -186,7 +186,7 @@ const pageW = 210
       doc.setFont('helvetica', 'italic')
       doc.setFontSize(8.5)
       doc.setTextColor(150, 155, 160)
-      doc.text('Sem dados registados', margin + 2, y)
+      doc.text('sem dados registados', margin + 2, y)
       y += 6
     }
     y += 3
@@ -197,19 +197,19 @@ const pageW = 210
   addSectionTitle('3. Faturação')
   addField(
     'Email de faturação',
-    sub.billing_same_email ? 'Mesmo do Dep. Financeiro' : (sub.billing_email || '—'),
+    sub.billing_same_email ? 'mesmo do dep. financeiro' : (sub.billing_email || '—'),
   )
   addField(
     'Modo de envio',
-    sub.billing_mode === 'eletronico' ? 'Eletrónico'
-      : sub.billing_mode === 'papel' ? 'Papel' : '—',
+    sub.billing_mode === 'eletronico' ? 'eletrónico'
+      : sub.billing_mode === 'papel' ? 'papel' : '—',
   )
   if (sub.billing_notes) addField('Observações', sub.billing_notes)
   y += 4
 
   // ── Secção 4 — Consentimento RGPD ────────────────────────
   addSectionTitle('4. Consentimento RGPD')
-  addField('Aceite', sub.rgpd_consent ? t.yes : t.no)
+  addField('Aceite', (sub.rgpd_consent ? t.yes : t.no).toLowerCase())
   if (sub.rgpd_consent?.accepted_at) {
     addField(
       'Data e hora de aceitação',
@@ -225,7 +225,7 @@ const pageW = 210
   addSectionTitle('5. Autorizações de Imagem')
   for (const type of AUTH_ORDER) {
     const a = sub.authorizations.find(x => x.type === type)
-    addField(AUTH_LABELS[type] || type, a ? (a.authorized ? 'Sim' : 'Não') : '—')
+    addField(AUTH_LABELS[type] || type, a ? (a.authorized ? 'sim' : 'não') : '—')
   }
 
   // ── Rodapé em todas as páginas ───────────────────────────
@@ -238,7 +238,7 @@ const pageW = 210
     doc.setFontSize(7.5)
     doc.setTextColor(darkR, darkG, darkB)
     doc.text(
-      'Gráfica Ideal de Águeda — Indústrias Gráficas, SA | geral@graficaideal.pt | www.graficaideal.pt',
+      'gráfica ideal de águeda — indústrias gráficas, sa | geral@graficaideal.pt | www.graficaideal.pt',
       pageW / 2,
       pageH - footerH + 7.5,
       { align: 'center' },

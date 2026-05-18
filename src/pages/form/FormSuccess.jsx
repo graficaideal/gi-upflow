@@ -73,7 +73,7 @@ const pageW = 210
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(9.5)
     doc.setTextColor(255, 255, 255)
-    doc.text(title, margin + 4, y + 5.5)
+    doc.text(title.toLowerCase(), margin + 4, y + 5.5)
     y += 12
   }
 
@@ -94,7 +94,7 @@ const pageW = 210
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(9)
     doc.setTextColor(darkR, darkG, darkB)
-    doc.text(text, margin + 2, y)
+    doc.text(text.toLowerCase(), margin + 2, y)
     y += 6.5
   }
 
@@ -136,7 +136,7 @@ const pageW = 210
       doc.setFont('helvetica', 'italic')
       doc.setFontSize(8.5)
       doc.setTextColor(150, 155, 160)
-      doc.text(t.noDataLabel, margin + 2, y)
+      doc.text(t.noDataLabel.toLowerCase(), margin + 2, y)
       y += 6
     }
     y += 3
@@ -147,26 +147,26 @@ const pageW = 210
   addSectionTitle(`3. ${t.billingTitle}`)
   addField(
     t.billingEmail,
-    formData.billing_same_email ? t.billingSameAsFinance : (formData.billing_email || '—'),
+    formData.billing_same_email ? t.billingSameAsFinance.toLowerCase() : (formData.billing_email || '—'),
   )
   addField(
     t.billingMode,
-    formData.billing_mode === 'eletronico' ? t.billingModeElectronic
-      : formData.billing_mode === 'papel' ? t.billingModePaper : '—',
+    formData.billing_mode === 'eletronico' ? t.billingModeElectronic.toLowerCase()
+      : formData.billing_mode === 'papel' ? t.billingModePaper.toLowerCase() : '—',
   )
   if (formData.billing_notes) addField(t.billingNotes, formData.billing_notes)
   y += 4
 
   // Section 4 — RGPD
   addSectionTitle(`4. ${t.rgpdTitle}`)
-  addField(t.rgpdAcceptedLabel, formData.rgpd_accepted ? t.yes : t.no)
+  addField(t.rgpdAcceptedLabel, (formData.rgpd_accepted ? t.yes : t.no).toLowerCase())
   y += 4
 
   // Section 5 — Authorizations
   addSectionTitle(`5. ${t.step4Title}`)
-  addField(t.authPhotos, formData.fotos === 'sim' ? t.yes : t.no)
-  addField(t.authVideos, formData.videos === 'sim' ? t.yes : t.no)
-  addField(t.authPublications, formData.publicacoes === 'sim' ? t.yes : t.no)
+  addField(t.authPhotos, (formData.fotos === 'sim' ? t.yes : t.no).toLowerCase())
+  addField(t.authVideos, (formData.videos === 'sim' ? t.yes : t.no).toLowerCase())
+  addField(t.authPublications, (formData.publicacoes === 'sim' ? t.yes : t.no).toLowerCase())
 
   // Footer on all pages (always PT)
   const total = doc.getNumberOfPages()
@@ -178,7 +178,7 @@ const pageW = 210
     doc.setFontSize(7.5)
     doc.setTextColor(darkR, darkG, darkB)
     doc.text(
-      'Gráfica Ideal de Águeda — Indústrias Gráficas, SA | geral@graficaideal.pt | www.graficaideal.pt',
+      'gráfica ideal de águeda — indústrias gráficas, sa | geral@graficaideal.pt | www.graficaideal.pt',
       pageW / 2,
       pageH - footerH + 7.5,
       { align: 'center' },
