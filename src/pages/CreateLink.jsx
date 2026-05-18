@@ -83,7 +83,7 @@ export default function CreateLink() {
     setSubmitError('')
     try {
       const vendor = vendors.find(v => v.id === vendor_id)
-      const data = await createLink(commercial_name, expires_at, vendor_id, vendor?.name ?? '', language)
+      const data = await createLink(commercial_name.trim(), expires_at, vendor_id, vendor?.name ?? '', language)
       setToken(data.token)
       setLinkLanguage(language)
     } catch {

@@ -36,7 +36,7 @@ export default function StepCompany({ formData, onNext, t, language }) {
       return
     }
     setContactError(null)
-    onNext(data)
+    onNext({ ...data, fiscal_name: data.fiscal_name.trim() })
   }
 
   return (
