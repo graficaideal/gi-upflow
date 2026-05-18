@@ -50,7 +50,7 @@ export const translations = {
     successText: "Os seus dados foram submetidos com sucesso. A equipa da Gráfica Ideal irá analisar a informação fornecida.",
     copyright: "© 2026 Gráfica Ideal de Águeda — Indústrias Gráficas, SA. Todos os direitos reservados.",
     emailSubject: "Dados Cadastrais — Gráfica Ideal de Águeda",
-    emailBody: "Exmo(a). Senhor(a),\n\nA Gráfica Ideal de Águeda vem por este meio solicitar o preenchimento/atualização dos vossos dados cadastrais, essenciais para a manutenção de uma relação comercial eficiente e em conformidade com o Regulamento Geral sobre a Proteção de Dados (RGPD).\n\nPara proceder ao preenchimento, basta aceder ao seguinte link:\n\n[LINK]\n\nO processo é simples, rápido e seguro. Após a submissão, os vossos dados ficarão registados na nossa base de dados e serão utilizados exclusivamente para fins comerciais inerentes à nossa relação.\n\nCaso tenham alguma dúvida, não hesitem em contactar-nos.\n\nCom os melhores cumprimentos,",
+    emailBody: "Exmo(a). Senhor(a),\n\nA Gráfica Ideal de Águeda vem por este meio solicitar à [EMPRESA] o preenchimento/atualização dos vossos dados cadastrais, essenciais para a manutenção de uma relação comercial eficiente e em conformidade com o Regulamento Geral sobre a Proteção de Dados (RGPD).\n\nPara proceder ao preenchimento, basta aceder ao seguinte link:\n\n[LINK]\n\nO processo é simples, rápido e seguro. Após a submissão, os vossos dados ficarão registados na nossa base de dados e serão utilizados exclusivamente para fins comerciais inerentes à nossa relação.\n\nCaso tenham alguma dúvida, não hesitem em contactar-nos.\n\nCom os melhores cumprimentos,",
   },
   en: {
     appTagline: "UpFlow — Customer Data Update Portal",
@@ -103,7 +103,7 @@ export const translations = {
     successText: "Your details have been successfully submitted. The Gráfica Ideal team will review the information provided.",
     copyright: "© 2026 Gráfica Ideal de Águeda — Indústrias Gráficas, SA. All rights reserved.",
     emailSubject: "Company Data — Gráfica Ideal de Águeda",
-    emailBody: "Dear Sir/Madam,\n\nGráfica Ideal de Águeda hereby requests the completion/update of your company data, essential for maintaining an efficient commercial relationship in compliance with the General Data Protection Regulation (GDPR).\n\nTo proceed, please access the following link:\n\n[LINK]\n\nThe process is simple, fast and secure. Upon submission, your data will be stored in our database and used exclusively for commercial purposes inherent to our relationship.\n\nShould you have any questions, please do not hesitate to contact us.\n\nKind regards,",
+    emailBody: "Dear Sir/Madam,\n\nGráfica Ideal de Águeda hereby requests [EMPRESA] to complete/update your company data, essential for maintaining an efficient commercial relationship in compliance with the General Data Protection Regulation (GDPR).\n\nTo proceed, please access the following link:\n\n[LINK]\n\nThe process is simple, fast and secure. Upon submission, your data will be stored in our database and used exclusively for commercial purposes inherent to our relationship.\n\nShould you have any questions, please do not hesitate to contact us.\n\nKind regards,",
   },
   es: {
     appTagline: "UpFlow — Portal de Actualización de Datos de Clientes",
@@ -156,6 +156,6 @@ export const translations = {
     successText: "Sus datos han sido enviados correctamente. El equipo de Gráfica Ideal revisará la información proporcionada.",
     copyright: "© 2026 Gráfica Ideal de Águeda — Indústrias Gráficas, SA. Todos los derechos reservados.",
     emailSubject: "Datos Cadastrales — Gráfica Ideal de Águeda",
-    emailBody: "Estimado/a señor/a,\n\nGráfica Ideal de Águeda le solicita por este medio la cumplimentación/actualización de sus datos de empresa, esenciales para el mantenimiento de una relación comercial eficiente y en conformidad con el Reglamento General de Protección de Datos (RGPD).\n\nPara proceder, acceda al siguiente enlace:\n\n[LINK]\n\nEl proceso es sencillo, rápido y seguro. Tras el envío, sus datos quedarán registrados en nuestra base de datos y serán utilizados exclusivamente con fines comerciales inherentes a nuestra relación.\n\nSi tiene alguna duda, no dude en contactarnos.\n\nAtentamente,",
+    emailBody: "Estimado/a señor/a,\n\nGráfica Ideal de Águeda solicita a [EMPRESA] la cumplimentación/actualización de sus datos de empresa, esenciales para el mantenimiento de una relación comercial eficiente y en conformidad con el Reglamento General de Protección de Datos (RGPD).\n\nPara proceder, acceda al siguiente enlace:\n\n[LINK]\n\nEl proceso es sencillo, rápido y seguro. Tras el envío, sus datos quedarán registrados en nuestra base de datos y serán utilizados exclusivamente con fines comerciales inherentes a nuestra relación.\n\nSi tiene alguna duda, no dude en contactarnos.\n\nAtentamente,",
   },
 }

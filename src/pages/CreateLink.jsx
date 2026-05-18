@@ -31,10 +31,10 @@ function MailIcon() {
   )
 }
 
-function openMailto(formUrl, language = 'pt') {
+function openMailto(formUrl, language = 'pt', commercialName = '') {
   const t = translations[language] ?? translations.pt
   const subject = t.emailSubject
-  const body = t.emailBody.replace('[LINK]', formUrl)
+  const body = t.emailBody.replace('[EMPRESA]', commercialName).replace('[LINK]', formUrl)
   window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 }
 
@@ -53,6 +53,7 @@ function getDefaultExpiry() {
 export default function CreateLink() {
   const [token, setToken] = useState(null)
   const [linkLanguage, setLinkLanguage] = useState('pt')
+  const [linkCommercialName, setLinkCommercialName] = useState('')
   const [copied, setCopied] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [vendors, setVendors] = useState([])
@@ -86,6 +87,7 @@ export default function CreateLink() {
       const data = await createLink(commercial_name.trim(), expires_at, vendor_id, vendor?.name ?? '', language)
       setToken(data.token)
       setLinkLanguage(language)
+      setLinkCommercialName(commercial_name.trim())
     } catch {
       setSubmitError('Erro ao criar link. Verifica a ligação e tenta novamente.')
     }
@@ -102,6 +104,7 @@ export default function CreateLink() {
   function handleCreateNew() {
     setToken(null)
     setCopied(false)
+    setLinkCommercialName('')
     reset()
     try {
       const id = JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id
@@ -190,7 +193,7 @@ export default function CreateLink() {
                 {copied ? <CheckIcon /> : <CopyIcon />}
                 {copied ? 'Copiado!' : 'Copiar'}
               </button>
-              <button onClick={() => openMailto(formUrl, linkLanguage)} className="btn-copy">
+              <button onClick={() => openMailto(formUrl, linkLanguage, linkCommercialName)} className="btn-copy">
                 <MailIcon />
                 Enviar por Email
               </button>

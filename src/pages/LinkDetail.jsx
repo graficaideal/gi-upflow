@@ -303,10 +303,10 @@ function MailIcon() {
   )
 }
 
-function openMailto(formUrl, language = 'pt') {
+function openMailto(formUrl, language = 'pt', commercialName = '') {
   const t = translations[language] ?? translations.pt
   const subject = t.emailSubject
-  const body = t.emailBody.replace('[LINK]', formUrl)
+  const body = t.emailBody.replace('[EMPRESA]', commercialName).replace('[LINK]', formUrl)
   window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 }
 
@@ -443,7 +443,7 @@ export default function LinkDetail() {
               {copied ? <CheckIcon /> : <CopyIcon />}
               {copied ? 'Copiado' : 'Copiar'}
             </button>
-            <button className="btn-secondary btn-mail-detail" onClick={() => openMailto(formUrl, link.language ?? 'pt')}>
+            <button className="btn-secondary btn-mail-detail" onClick={() => openMailto(formUrl, link.language ?? 'pt', link.commercial_name ?? '')}>
               <MailIcon />
               Enviar por Email
             </button>
