@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react'
 import { jsPDF } from 'jspdf'
-import dmSansRegularB64 from '../assets/fonts/DMSans-Regular.ttf?base64'
-import dmSansBoldB64 from '../assets/fonts/DMSans-Bold.ttf?base64'
-import dmSansItalicB64 from '../assets/fonts/DMSans-Italic.ttf?base64'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getLinkById, markEmailSent } from '../hooks/useLinks'
 import { translations } from '../utils/translations'
@@ -79,14 +76,7 @@ async function downloadPDF(link) {
 
   const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' })
 
-  doc.addFileToVFS('DMSans-Regular.ttf', dmSansRegularB64)
-  doc.addFont('DMSans-Regular.ttf', 'DMSans', 'normal')
-  doc.addFileToVFS('DMSans-Bold.ttf', dmSansBoldB64)
-  doc.addFont('DMSans-Bold.ttf', 'DMSans', 'bold')
-  doc.addFileToVFS('DMSans-Italic.ttf', dmSansItalicB64)
-  doc.addFont('DMSans-Italic.ttf', 'DMSans', 'italic')
-
-  const pageW = 210
+const pageW = 210
   const pageH = 297
   const margin = 15
   const contentW = pageW - 2 * margin
@@ -108,7 +98,7 @@ async function downloadPDF(link) {
   doc.addImage(logoPng, 'PNG', margin, logoY, logoW, logoH)
 
   const titleX = margin + logoW + 6
-  doc.setFont('DMSans', 'bold')
+  doc.setFont('helvetica', 'bold')
   doc.setFontSize(13)
   doc.setTextColor(255, 255, 255)
   doc.text(`Ficha de Cliente — ${link.commercial_name}`, titleX, logoY + 8)
@@ -119,7 +109,7 @@ async function downloadPDF(link) {
         hour: '2-digit', minute: '2-digit',
       })
     : '—'
-  doc.setFont('DMSans', 'normal')
+  doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
   doc.setTextColor(190, 195, 200)
   doc.text(`Submetido em: ${submittedStr}`, titleX, logoY + 17)
@@ -138,7 +128,7 @@ async function downloadPDF(link) {
     checkBreak(10)
     doc.setFillColor(darkR, darkG, darkB)
     doc.rect(margin, y, contentW, 8, 'F')
-    doc.setFont('DMSans', 'bold')
+    doc.setFont('helvetica', 'bold')
     doc.setFontSize(9.5)
     doc.setTextColor(255, 255, 255)
     doc.text(title, margin + 4, y + 5.5)
@@ -147,11 +137,11 @@ async function downloadPDF(link) {
 
   function addField(label, value) {
     checkBreak(7)
-    doc.setFont('DMSans', 'bold')
+    doc.setFont('helvetica', 'bold')
     doc.setFontSize(8.5)
     doc.setTextColor(100, 110, 120)
     doc.text(`${label.toLowerCase()}:`, margin + 2, y)
-    doc.setFont('DMSans', 'normal')
+    doc.setFont('helvetica', 'normal')
     doc.setTextColor(30, 35, 40)
     doc.text(value || '—', margin + 58, y)
     y += 6.5
@@ -159,7 +149,7 @@ async function downloadPDF(link) {
 
   function addSubheading(text) {
     checkBreak(9)
-    doc.setFont('DMSans', 'bold')
+    doc.setFont('helvetica', 'bold')
     doc.setFontSize(9)
     doc.setTextColor(darkR, darkG, darkB)
     doc.text(text, margin + 2, y)
@@ -193,7 +183,7 @@ async function downloadPDF(link) {
       addField('Telemóvel', c.mobile)
     } else {
       checkBreak(6)
-      doc.setFont('DMSans', 'italic')
+      doc.setFont('helvetica', 'italic')
       doc.setFontSize(8.5)
       doc.setTextColor(150, 155, 160)
       doc.text('Sem dados registados', margin + 2, y)
@@ -244,7 +234,7 @@ async function downloadPDF(link) {
     doc.setPage(i)
     doc.setFillColor(yelR, yelG, yelB)
     doc.rect(0, pageH - footerH, pageW, footerH, 'F')
-    doc.setFont('DMSans', 'normal')
+    doc.setFont('helvetica', 'normal')
     doc.setFontSize(7.5)
     doc.setTextColor(darkR, darkG, darkB)
     doc.text(
