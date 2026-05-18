@@ -194,6 +194,8 @@ const pageW = 210
   y += 1
 
   // ── Secção 3 — Faturação ─────────────────────────────────
+  doc.addPage()
+  y = 15
   addSectionTitle('3. Faturação')
   addField(
     'Email de faturação',
