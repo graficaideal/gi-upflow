@@ -4,6 +4,24 @@ import { useLinks, deleteLink } from '../hooks/useLinks'
 import DeleteLinkModal from '../components/DeleteLinkModal'
 import './Dashboard.css'
 
+function MailIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2"/>
+      <polyline points="2,4 12,13 22,4"/>
+    </svg>
+  )
+}
+
+function EmailStatusCell({ sentAt }) {
+  const tooltip = sentAt ? `Enviado a ${formatDateTime(sentAt)}` : 'Email não enviado'
+  return (
+    <span className={`email-status-icon${sentAt ? ' email-status-icon--sent' : ''}`} data-tooltip={tooltip}>
+      <MailIcon />
+    </span>
+  )
+}
+
 function TrashIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="15" height="15">
@@ -46,6 +64,7 @@ const SORT_OPTIONS = [
   { value: 'vendor_name',     label: 'Vendedor' },
   { value: 'expires_at',      label: 'Prazo' },
   { value: 'opened_at',       label: 'Aberto em' },
+  { value: 'email_sent_at',   label: 'Email' },
   { value: 'status',          label: 'Estado' },
 ]
 
@@ -167,6 +186,14 @@ export default function Dashboard() {
           if (bv === null) return -1
           return dir * (av - bv)
         }
+        case 'email_sent_at': {
+          const av = a.email_sent_at ? new Date(a.email_sent_at).getTime() : null
+          const bv = b.email_sent_at ? new Date(b.email_sent_at).getTime() : null
+          if (av === null && bv === null) return 0
+          if (av === null) return 1
+          if (bv === null) return -1
+          return dir * (av - bv)
+        }
         case 'status': {
           const ao = STATUS_ORDER[a.status] ?? 99
           const bo = STATUS_ORDER[b.status] ?? 99
@@ -269,6 +296,7 @@ export default function Dashboard() {
                   <SortTh column="created_at"      current={sortColumn} direction={sortDirection} onSort={handleSort}>Criado em</SortTh>
                   <SortTh column="expires_at"      current={sortColumn} direction={sortDirection} onSort={handleSort}>Prazo</SortTh>
                   <SortTh column="opened_at"       current={sortColumn} direction={sortDirection} onSort={handleSort}>Aberto em</SortTh>
+                  <SortTh column="email_sent_at"   current={sortColumn} direction={sortDirection} onSort={handleSort}>Email</SortTh>
                   <SortTh column="status"          current={sortColumn} direction={sortDirection} onSort={handleSort}>Estado</SortTh>
                   <th></th>
                 </tr>
@@ -283,6 +311,7 @@ export default function Dashboard() {
                       <td>{formatDate(link.created_at)}</td>
                       <td>{formatDate(link.expires_at)}</td>
                       <td className="td-muted">{formatDateTime(link.opened_at)}</td>
+                      <td className="td-email"><EmailStatusCell sentAt={link.email_sent_at} /></td>
                       <td><span className={`status-badge ${s.cls}`}>{s.label}</span></td>
                       <td>
                         <div className="td-actions">
@@ -336,7 +365,10 @@ export default function Dashboard() {
                         <p className="link-card-company">Vendedor: {link.vendor_name}</p>
                       )}
                     </div>
-                    <span className={`status-badge ${s.cls}`}>{s.label}</span>
+                    <div className="link-card-badges">
+                      <EmailStatusCell sentAt={link.email_sent_at} />
+                      <span className={`status-badge ${s.cls}`}>{s.label}</span>
+                    </div>
                   </div>
                   <div className="link-card-bottom">
                     <div>

@@ -4,7 +4,7 @@ import dmSansRegularB64 from '../assets/fonts/DMSans-Regular.ttf?base64'
 import dmSansBoldB64 from '../assets/fonts/DMSans-Bold.ttf?base64'
 import dmSansItalicB64 from '../assets/fonts/DMSans-Italic.ttf?base64'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getLinkById } from '../hooks/useLinks'
+import { getLinkById, markEmailSent } from '../hooks/useLinks'
 import { translations } from '../utils/translations'
 import './LinkDetail.css'
 
@@ -318,6 +318,7 @@ export default function LinkDetail() {
   const [error, setError] = useState(null)
   const [copied, setCopied] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
+  const [markingEmail, setMarkingEmail] = useState(false)
 
   useEffect(() => {
     getLinkById(id)
@@ -328,6 +329,16 @@ export default function LinkDetail() {
   async function handleDownloadPDF() {
     setPdfLoading(true)
     try { await downloadPDF(link) } finally { setPdfLoading(false) }
+  }
+
+  async function handleMarkEmailSent() {
+    setMarkingEmail(true)
+    try {
+      await markEmailSent(id)
+      setLink(prev => ({ ...prev, email_sent_at: new Date().toISOString() }))
+    } finally {
+      setMarkingEmail(false)
+    }
   }
 
   function copyLink() {
@@ -400,6 +411,12 @@ export default function LinkDetail() {
               <span className="detail-meta-value">{formatDate(link.submitted_at)}</span>
             </div>
           )}
+          {link.email_sent_at && (
+            <div className="detail-meta-item">
+              <span className="detail-meta-label">Email enviado em</span>
+              <span className="detail-meta-value detail-meta-value--sent">✓ {formatDateTime(link.email_sent_at)}</span>
+            </div>
+          )}
         </div>
 
         {(link.status === 'pending' || link.status === 'opened') && (
@@ -418,6 +435,16 @@ export default function LinkDetail() {
               <MailIcon />
               Enviar por Email
             </button>
+            {link.email_sent_at ? (
+              <button className="btn-resend" onClick={handleMarkEmailSent} disabled={markingEmail}>
+                Marcar reenvio
+              </button>
+            ) : (
+              <button className="btn-secondary btn-mail-detail" onClick={handleMarkEmailSent} disabled={markingEmail}>
+                <MailIcon />
+                Marcar como enviado
+              </button>
+            )}
           </div>
         )}
         {link.status === 'completed' && sub && (
