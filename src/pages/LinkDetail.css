@@ -106,7 +106,6 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 .detail-link-input {
@@ -149,22 +148,74 @@
   font-size: 13px;
 }
 
-.btn-resend {
-  background: none;
-  border: 1px solid transparent;
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--color-text-muted);
-  padding: 5px 10px;
+/* ── Mail status icon button (in card header badges) ───────────────────────── */
+.mail-status-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   border-radius: 6px;
-  font-family: var(--font-base);
-  font-weight: 500;
-  white-space: nowrap;
-  transition: background 0.15s, color 0.15s;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
 }
 
-.btn-resend:hover { background: var(--color-border); color: var(--color-text); }
-.btn-resend:disabled { opacity: 0.55; cursor: not-allowed; }
+.mail-status-btn--sent {
+  color: #2d8c48;
+  border-color: rgba(52, 168, 83, 0.35);
+  background: rgba(52, 168, 83, 0.08);
+}
+
+:root.dark .mail-status-btn--sent {
+  color: #5ec97a;
+  border-color: rgba(94, 201, 122, 0.3);
+  background: rgba(52, 168, 83, 0.12);
+}
+
+.mail-status-btn:not(:disabled):hover {
+  background: var(--color-border);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.mail-status-btn--sent:not(:disabled):hover {
+  background: rgba(52, 168, 83, 0.15);
+  color: #2d8c48;
+}
+
+:root.dark .mail-status-btn--sent:not(:disabled):hover { color: #5ec97a; }
+
+.mail-status-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.mail-status-btn[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 7px);
+  right: 0;
+  transform: translateY(3px);
+  background: #1e2428;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-base);
+  padding: 4px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s, transform 0.15s;
+  z-index: 10;
+}
+
+.mail-status-btn[data-tooltip]:hover::before {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .btn-pdf-detail {
   display: inline-flex;

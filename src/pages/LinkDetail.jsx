@@ -377,6 +377,18 @@ export default function LinkDetail() {
             <h2 className="detail-client">{link.commercial_name}</h2>
           </div>
           <div className="detail-card-badges">
+            <button
+              className={`mail-status-btn${link.email_sent_at ? ' mail-status-btn--sent' : ''}`}
+              onClick={handleMarkEmailSent}
+              disabled={markingEmail}
+              data-tooltip={link.email_sent_at
+                ? `Enviado a ${formatDateTime(link.email_sent_at)} · clique para registar reenvio`
+                : 'Marcar como enviado'
+              }
+              aria-label={link.email_sent_at ? 'Marcar reenvio' : 'Marcar como enviado'}
+            >
+              <MailIcon />
+            </button>
             <span className={`status-badge ${s.cls}`}>{s.label}</span>
             <span
               className="lang-badge"
@@ -435,16 +447,6 @@ export default function LinkDetail() {
               <MailIcon />
               Enviar por Email
             </button>
-            {link.email_sent_at ? (
-              <button className="btn-resend" onClick={handleMarkEmailSent} disabled={markingEmail}>
-                Marcar reenvio
-              </button>
-            ) : (
-              <button className="btn-secondary btn-mail-detail" onClick={handleMarkEmailSent} disabled={markingEmail}>
-                <MailIcon />
-                Marcar como enviado
-              </button>
-            )}
           </div>
         )}
         {link.status === 'completed' && sub && (
