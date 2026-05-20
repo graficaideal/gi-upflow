@@ -98,7 +98,7 @@ export default function Login() {
       <div className="login-card">
         <div className="login-brand">
           <img src="/logo.svg" alt="Gráfica Ideal" className="login-logo" />
-          <span className="login-brand-name">UpFlow</span>
+          <span className="login-brand-name notranslate" translate="no">UpFlow</span>
           <span className="login-brand-sub">Portal de atualização de dados de clientes</span>
         </div>
 
