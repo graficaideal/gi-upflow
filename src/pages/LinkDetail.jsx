@@ -3,6 +3,7 @@ import { jsPDF } from 'jspdf'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getLinkById, markEmailSent } from '../hooks/useLinks'
 import { translations } from '../utils/translations'
+import { generateClientXML, downloadXML, xmlFilename } from '../utils/xmlExport'
 import './LinkDetail.css'
 
 const STATUS_MAP = {
@@ -275,6 +276,17 @@ function CheckIcon() {
   )
 }
 
+function XmlIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <polyline points="9 15 7 13 9 11"/>
+      <polyline points="15 11 17 13 15 15"/>
+    </svg>
+  )
+}
+
 function PdfIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -310,6 +322,7 @@ export default function LinkDetail() {
   const [error, setError] = useState(null)
   const [copied, setCopied] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
+  const [xmlLoading, setXmlLoading] = useState(false)
   const [markingEmail, setMarkingEmail] = useState(false)
 
   useEffect(() => {
@@ -328,6 +341,19 @@ export default function LinkDetail() {
       alert('Erro ao gerar o PDF. Tenta novamente.')
     } finally {
       setPdfLoading(false)
+    }
+  }
+
+  async function handleDownloadXML() {
+    setXmlLoading(true)
+    try {
+      const xml = generateClientXML([link])
+      downloadXML(xml, xmlFilename(link.commercial_name))
+    } catch (err) {
+      console.error('Erro ao gerar XML:', err)
+      alert('Erro ao gerar o XML. Tenta novamente.')
+    } finally {
+      setXmlLoading(false)
     }
   }
 
@@ -454,6 +480,10 @@ export default function LinkDetail() {
             <button className="btn-pdf-detail" onClick={handleDownloadPDF} disabled={pdfLoading}>
               <PdfIcon />
               {pdfLoading ? 'A gerar…' : 'Descarregar PDF'}
+            </button>
+            <button className="btn-secondary btn-xml-detail" onClick={handleDownloadXML} disabled={xmlLoading}>
+              <XmlIcon />
+              {xmlLoading ? 'A exportar…' : 'Exportar XML'}
             </button>
           </div>
         )}

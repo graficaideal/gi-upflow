@@ -148,6 +148,16 @@
   font-size: 13px;
 }
 
+.btn-xml-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.btn-xml-detail:disabled { opacity: 0.55; cursor: not-allowed; }
+
 /* ── Mail status icon button (in card header badges) ───────────────────────── */
 .mail-status-btn {
   position: relative;

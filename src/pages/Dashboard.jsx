@@ -1,8 +1,20 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { useLinks, deleteLink } from '../hooks/useLinks'
+import { useLinks, deleteLink, getLinkById } from '../hooks/useLinks'
+import { generateClientXML, downloadXML } from '../utils/xmlExport'
 import DeleteLinkModal from '../components/DeleteLinkModal'
 import './Dashboard.css'
+
+function XmlIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <polyline points="9 15 7 13 9 11"/>
+      <polyline points="15 11 17 13 15 15"/>
+    </svg>
+  )
+}
 
 function MailIcon() {
   return (
@@ -117,6 +129,7 @@ export default function Dashboard() {
     } catch { return 'all' }
   })
   const [deletingLink, setDeletingLink] = useState(null)
+  const [xmlLoading, setXmlLoading] = useState(false)
   const [hideCompleted, setHideCompleted] = useState(
     () => localStorage.getItem('upflow-hide-completed') === 'true'
   )
@@ -144,6 +157,24 @@ export default function Dashboard() {
     await deleteLink(id)
     removeLink(id)
     setDeletingLink(null)
+  }
+
+  async function handleExportXML() {
+    setXmlLoading(true)
+    try {
+      const completedLinks = filtered.filter(l => l.status === 'completed')
+      const fullLinks = await Promise.all(completedLinks.map(l => getLinkById(l.id)))
+      const xml = generateClientXML(fullLinks)
+      const now = new Date()
+      const dd = String(now.getDate()).padStart(2, '0')
+      const mm = String(now.getMonth() + 1).padStart(2, '0')
+      downloadXML(xml, `upflow-export-${dd}-${mm}-${now.getFullYear()}.xml`)
+    } catch (err) {
+      console.error('Erro ao exportar XML:', err)
+      alert('Erro ao exportar XML. Tenta novamente.')
+    } finally {
+      setXmlLoading(false)
+    }
   }
 
   const vendors = useMemo(() => {
@@ -204,6 +235,8 @@ export default function Dashboard() {
       }
     })
   }, [filtered, sortColumn, sortDirection])
+
+  const hasCompleted = filtered.some(l => l.status === 'completed')
 
   const stats = {
     total:     links.length,
@@ -270,6 +303,16 @@ export default function Dashboard() {
           />
           Ocultar concluídos
         </label>
+
+        <button
+          className="btn-xml-export"
+          onClick={handleExportXML}
+          disabled={!hasCompleted || xmlLoading}
+          data-tooltip={!hasCompleted ? 'Sem registos concluídos' : undefined}
+        >
+          <XmlIcon />
+          {xmlLoading ? 'A exportar…' : 'Exportar XML'}
+        </button>
       </div>
 
       {loading && <p className="dashboard-loading">A carregar…</p>}
