@@ -6,12 +6,6 @@ import './Login.css'
 
 const VENDOR_KEY = 'upflow-active-vendor'
 
-function readStoredVendorId() {
-  try {
-    const stored = localStorage.getItem(VENDOR_KEY)
-    return stored ? (JSON.parse(stored)?.id ?? '') : ''
-  } catch { return '' }
-}
 
 function BackspaceIcon() {
   return (
@@ -30,7 +24,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [shake, setShake] = useState(false)
   const [vendors, setVendors] = useState([])
-  const [selectedVendorId, setSelectedVendorId] = useState(readStoredVendorId)
+  const [selectedVendorId, setSelectedVendorId] = useState('')
   const inputRef = useRef(null)
 
   useEffect(() => {
@@ -44,19 +38,7 @@ export default function Login() {
 
   useEffect(() => {
     inputRef.current?.focus()
-    getVendors().then(list => {
-      setVendors(list)
-      // Fallback: if id init found nothing, try matching by stored name
-      setSelectedVendorId(prev => {
-        if (prev) return prev
-        try {
-          const stored = localStorage.getItem(VENDOR_KEY)
-          if (!stored) return ''
-          const name = JSON.parse(stored)?.name
-          return list.find(v => v.name === name)?.id ?? ''
-        } catch { return '' }
-      })
-    }).catch(() => {})
+    getVendors().then(list => setVendors(list)).catch(() => {})
   }, [])
 
   function addDigit(digit) {
