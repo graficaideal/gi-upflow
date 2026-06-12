@@ -151,7 +151,7 @@ serve(async (req) => {
     body: JSON.stringify({
       from: 'UpFlow <noreply@graficaideal.pt>',
       to: [vendor.email],
-      cc: ['informatica@graficaideal.pt', 'financeiro@graficaideal.pt'],
+      cc: ['financeiro@graficaideal.pt'],
       subject: `[UpFlow] Formulário concluído — ${commercial_name}`,
       html: emailHtml(commercial_name, vendor.name, submitted_at, link_id),
     }),
