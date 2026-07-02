@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { createLink, getVendors } from '../hooks/useLinks'
 import { translations } from '../utils/translations'
@@ -51,6 +51,9 @@ function getDefaultExpiry() {
 }
 
 export default function CreateLink() {
+  const location = useLocation()
+  const prefill = location.state?.prefill
+
   const [token, setToken] = useState(null)
   const [linkLanguage, setLinkLanguage] = useState('pt')
   const [linkCommercialName, setLinkCommercialName] = useState('')
@@ -59,7 +62,12 @@ export default function CreateLink() {
   const [vendors, setVendors] = useState([])
 
   const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm({
-    defaultValues: { vendor_id: '', expires_at: getDefaultExpiry(), language: 'pt' },
+    defaultValues: {
+      vendor_id: '',
+      commercial_name: prefill?.commercial_name ?? '',
+      expires_at: getDefaultExpiry(),
+      language: prefill?.language ?? 'pt',
+    },
   })
 
   const minDate = getMinDate()
@@ -72,6 +80,10 @@ export default function CreateLink() {
 
   useEffect(() => {
     if (vendors.length === 0) return
+    if (prefill?.vendor_id) {
+      setValue('vendor_id', prefill.vendor_id)
+      return
+    }
     try {
       const id = JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id
       setValue('vendor_id', id || '')

@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useLinks, deleteLink, getLinkById } from '../hooks/useLinks'
 import { generateClientXML, downloadXML } from '../utils/xmlExport'
 import DeleteLinkModal from '../components/DeleteLinkModal'
+import RecreateLinkModal from '../components/RecreateLinkModal'
 import './Dashboard.css'
 
 function XmlIcon() {
@@ -120,6 +121,7 @@ function StatCard({ label, value, highlight, blue, green, red }) {
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate()
   const { links, loading, removeLink } = useLinks()
   const [statusFilter, setStatusFilter] = useState('all')
   const [vendorFilter, setVendorFilter] = useState(() => {
@@ -129,6 +131,7 @@ export default function Dashboard() {
     } catch { return 'all' }
   })
   const [deletingLink, setDeletingLink] = useState(null)
+  const [recreatePromptLink, setRecreatePromptLink] = useState(null)
   const [xmlLoading, setXmlLoading] = useState(false)
   const [hideCompleted, setHideCompleted] = useState(
     () => localStorage.getItem('upflow-hide-completed') === 'true'
@@ -156,7 +159,14 @@ export default function Dashboard() {
   async function handleDeleteConfirm(id) {
     await deleteLink(id)
     removeLink(id)
+    if (deletingLink?.status === 'expired') setRecreatePromptLink(deletingLink)
     setDeletingLink(null)
+  }
+
+  function handleRecreateConfirm() {
+    const { commercial_name, vendor_id, vendor_name, language } = recreatePromptLink
+    setRecreatePromptLink(null)
+    navigate('/links/create', { state: { prefill: { commercial_name, vendor_id, vendor_name, language } } })
   }
 
   async function handleExportXML() {
@@ -442,6 +452,14 @@ export default function Dashboard() {
           link={deletingLink}
           onConfirm={handleDeleteConfirm}
           onClose={() => setDeletingLink(null)}
+        />
+      )}
+
+      {recreatePromptLink && (
+        <RecreateLinkModal
+          link={recreatePromptLink}
+          onConfirm={handleRecreateConfirm}
+          onClose={() => setRecreatePromptLink(null)}
         />
       )}
 
