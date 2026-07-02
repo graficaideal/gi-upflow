@@ -45,7 +45,9 @@ function getMinDate() {
 }
 
 function getDefaultExpiry() {
-  return '2026-06-30'
+  const d = new Date()
+  d.setDate(d.getDate() + 30)
+  return d.toISOString().split('T')[0]
 }
 
 export default function CreateLink() {
