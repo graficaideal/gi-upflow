@@ -46,6 +46,34 @@ function TrashIcon() {
   )
 }
 
+function SearchIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  )
+}
+
+function XIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  )
+}
+
+function PrinterIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="6 9 6 2 18 2 18 9" />
+      <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />
+      <rect x="6" y="14" width="12" height="8" />
+    </svg>
+  )
+}
+
 const LANG_BADGE_STYLE = {
   pt: { backgroundColor: '#1a5276', color: '#ffffff' },
   en: { backgroundColor: '#1e8449', color: '#ffffff' },
@@ -81,11 +109,11 @@ const SORT_OPTIONS = [
   { value: 'status',          label: 'Estado' },
 ]
 
-function SortTh({ column, current, direction, onSort, children }) {
+function SortTh({ column, current, direction, onSort, children, className }) {
   const active = column === current
   return (
     <th
-      className={`th-sortable${active ? ' th-sortable--active' : ''}`}
+      className={`th-sortable${active ? ' th-sortable--active' : ''}${className ? ' ' + className : ''}`}
       onClick={() => onSort(column)}
     >
       {children}
@@ -138,6 +166,7 @@ export default function Dashboard() {
   )
   const [sortColumn, setSortColumn] = useState('created_at')
   const [sortDirection, setSortDirection] = useState('desc')
+  const [searchQuery, setSearchQuery] = useState('')
 
   function toggleHideCompleted() {
     setHideCompleted(prev => {
@@ -195,12 +224,16 @@ export default function Dashboard() {
       .sort()
   }, [links])
 
-  const filtered = useMemo(() => links.filter(l => {
-    const statusOk = statusFilter === 'all' || l.status === statusFilter
-    const vendorOk = vendorFilter === 'all' || l.vendor_name === vendorFilter
-    const notHidden = !(hideCompleted && l.status === 'completed')
-    return statusOk && vendorOk && notHidden
-  }), [links, statusFilter, vendorFilter, hideCompleted])
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    return links.filter(l => {
+      const statusOk = statusFilter === 'all' || l.status === statusFilter
+      const vendorOk = vendorFilter === 'all' || l.vendor_name === vendorFilter
+      const notHidden = !(hideCompleted && l.status === 'completed')
+      const searchOk = !q || (l.commercial_name ?? '').toLowerCase().includes(q)
+      return statusOk && vendorOk && notHidden && searchOk
+    })
+  }, [links, statusFilter, vendorFilter, hideCompleted, searchQuery])
 
   const sorted = useMemo(() => {
     const dir = sortDirection === 'asc' ? 1 : -1
@@ -258,6 +291,11 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
+      <div className="print-header">
+        <h1>UpFlow — Lista de Links</h1>
+        <p>Impresso em {formatDateTime(new Date().toISOString())}</p>
+      </div>
+
       <header className="dashboard-header">
         <h1 className="dashboard-title">UpFlow</h1>
         <p className="dashboard-subtitle">Portal de atualização de dados de clientes</p>
@@ -272,6 +310,27 @@ export default function Dashboard() {
       </div>
 
       <div className="dashboard-filters">
+        <div className="search-box">
+          <SearchIcon />
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Pesquisar..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              className="search-clear"
+              onClick={() => setSearchQuery('')}
+              aria-label="Limpar pesquisa"
+            >
+              <XIcon />
+            </button>
+          )}
+        </div>
+
         <select
           className="filter-select"
           value={statusFilter}
@@ -323,6 +382,15 @@ export default function Dashboard() {
           <XmlIcon />
           {xmlLoading ? 'A exportar…' : 'Exportar XML'}
         </button>
+
+        <button
+          className="btn-icon"
+          type="button"
+          onClick={() => window.print()}
+          aria-label="Imprimir lista"
+        >
+          <PrinterIcon />
+        </button>
       </div>
 
       {loading && <p className="dashboard-loading">A carregar…</p>}
@@ -348,10 +416,10 @@ export default function Dashboard() {
                   <SortTh column="vendor_name"     current={sortColumn} direction={sortDirection} onSort={handleSort}>Vendedor</SortTh>
                   <SortTh column="created_at"      current={sortColumn} direction={sortDirection} onSort={handleSort}>Criado em</SortTh>
                   <SortTh column="expires_at"      current={sortColumn} direction={sortDirection} onSort={handleSort}>Prazo</SortTh>
-                  <SortTh column="opened_at"       current={sortColumn} direction={sortDirection} onSort={handleSort}>Aberto em</SortTh>
-                  <SortTh column="email_sent_at"   current={sortColumn} direction={sortDirection} onSort={handleSort}>Email</SortTh>
+                  <SortTh column="opened_at"       current={sortColumn} direction={sortDirection} onSort={handleSort} className="print-hide-col">Aberto em</SortTh>
+                  <SortTh column="email_sent_at"   current={sortColumn} direction={sortDirection} onSort={handleSort} className="print-hide-col">Email</SortTh>
                   <SortTh column="status"          current={sortColumn} direction={sortDirection} onSort={handleSort}>Estado</SortTh>
-                  <th></th>
+                  <th className="print-hide-col"></th>
                 </tr>
               </thead>
               <tbody>
@@ -363,10 +431,10 @@ export default function Dashboard() {
                       <td className="td-vendor">{link.vendor_name ?? '—'}</td>
                       <td>{formatDate(link.created_at)}</td>
                       <td>{formatDate(link.expires_at)}</td>
-                      <td className="td-muted">{formatDateTime(link.opened_at)}</td>
-                      <td className="td-email"><EmailStatusCell sentAt={link.email_sent_at} /></td>
+                      <td className="td-muted print-hide-col">{formatDateTime(link.opened_at)}</td>
+                      <td className="td-email print-hide-col"><EmailStatusCell sentAt={link.email_sent_at} /></td>
                       <td><span className={`status-badge ${s.cls}`}>{s.label}</span></td>
-                      <td>
+                      <td className="print-hide-col">
                         <div className="td-actions">
                           <Link to={`/links/${link.id}`} className="btn-detail">Ver detalhe</Link>
                           <button
