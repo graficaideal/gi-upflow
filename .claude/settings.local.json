@@ -8,15 +8,8 @@
       "Bash(mkdir *)",
       "Bash(cat)",
       "Bash(npm run *)",
-      "Bash(node --input-type=module)",
-      "Bash(node -e \"require\\('react-hook-form'\\)\")",
       "Bash(npx kill-port *)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
       "Bash(netstat -ano)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:5173/)",
-      "Bash(git -C C:/Users/sergiohenriques/GitHub/gi-upflow status)",
-      "Bash(git -C C:/Users/sergiohenriques/GitHub/gi-upflow add vercel.json)",
-      "Bash(git -C C:/Users/sergiohenriques/GitHub/gi-upflow commit -m ' *)",
       "Bash(git *)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\sergiohenriques\\\\GitHub\\\\gi-upflow\" -Force)",
       "Bash(Select-Object Name)",
@@ -26,13 +19,15 @@
       "Bash(where inkscape *)",
       "Bash(where chromium *)",
       "Bash(where \"chrome\")",
-      "Bash(git show *)",
       "Read(//tmp/**)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\sergiohenriques\\\\GitHub\\\\gi-upflow\\\\src\" -Recurse -File)",
       "Bash(Select-Object -ExpandProperty FullName)",
       "mcp__plugin_supabase_supabase__list_projects",
       "mcp__plugin_supabase_supabase__apply_migration",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Skill(frontend-design)",
+      "Bash(npx eslint *)",
+      "Bash(pkill -f \"vite --port 5183\")"
     ]
   }
 }
