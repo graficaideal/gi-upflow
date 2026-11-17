@@ -21,7 +21,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     async function load() {
-      await markExpired().catch(() => {})
+      await markExpired().catch(err => console.error('markExpired failed:', err))
       const data = await getAllLinks().catch(() => [])
       setLinks(data)
       setLoading(false)

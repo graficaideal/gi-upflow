@@ -137,7 +137,7 @@ export async function markExpired() {
     .from('upflow_links')
     .update({ status: 'expired' })
     .lt('expires_at', today)
-    .eq('status', 'pending')
+    .in('status', ['pending', 'opened'])
 
   if (error) throw error
 }
@@ -149,7 +149,9 @@ export function useLinks() {
 
   useEffect(() => {
     let mounted = true
-    getMyLinks()
+    markExpired()
+      .catch(err => console.error('markExpired failed:', err))
+      .then(() => getMyLinks())
       .then(data  => { if (mounted) { setLinks(data); setLoading(false) } })
       .catch(err  => { if (mounted) { setError(err);  setLoading(false) } })
     return () => { mounted = false }
