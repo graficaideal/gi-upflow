@@ -147,6 +147,40 @@
   font-size: 13px;
 }
 
+/* ── Fixed column widths (content length must not resize columns) ─────────── */
+.dashboard .table-wrapper { overflow-x: auto; }
+
+.links-table--fixed {
+  table-layout: fixed;
+  min-width: 1000px; /* below this, scroll instead of squeezing the name column */
+}
+
+.links-table--fixed th { box-sizing: border-box; white-space: nowrap; }
+
+/* Name takes the remaining width; every other column is fixed. */
+.col-vendor   { width: 150px; }
+.col-date     { width: 115px; }
+.col-datetime { width: 155px; }
+.col-email    { width: 80px; }
+.col-status   { width: 125px; }
+.col-actions  { width: 165px; }
+
+.links-table--fixed td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Single-line name so every row has the same height; the language badge never shrinks. */
+.links-table--fixed .td-name-wrap { display: flex; min-width: 0; }
+.links-table--fixed .td-name-wrap > * { flex-shrink: 0; }
+.links-table--fixed .td-name-text {
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .td-name-wrap {
   display: inline-flex;
   align-items: center;
@@ -334,6 +368,19 @@
 
   .table-wrapper {
     display: block !important;
+    overflow: visible;
+  }
+
+  /* Hidden print columns would leave gaps with fixed widths. */
+  .links-table--fixed {
+    table-layout: auto;
+    min-width: 0;
+  }
+
+  /* Paper has no hover tooltip: print full text instead of ellipsis. */
+  .links-table--fixed td,
+  .links-table--fixed .td-name-text {
+    white-space: normal;
     overflow: visible;
   }
 }
