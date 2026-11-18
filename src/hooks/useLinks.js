@@ -57,23 +57,9 @@ export async function getAllLinks() {
   return data ?? []
 }
 
-export async function markOpened(token) {
-  const { error } = await supabase
-    .from('upflow_links')
-    .update({ status: 'opened', opened_at: new Date().toISOString() })
-    .eq('token', token)
-    .eq('status', 'pending')
-
-  if (error) throw error
-}
-
-export async function getLinkByToken(token) {
-  const { data, error } = await supabase
-    .from('upflow_links')
-    .select('id, commercial_name, expires_at, status, token, language')
-    .eq('token', token)
-    .single()
-
+// Public form: anon has no table access, only this RPC (see upflow_open_form).
+export async function openForm(token) {
+  const { data, error } = await supabase.rpc('upflow_open_form', { p_token: token }).single()
   if (error) throw error
   return data
 }

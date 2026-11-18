@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { getLinkByToken, markOpened } from '../../hooks/useLinks'
+import { openForm } from '../../hooks/useLinks'
 import { submitForm } from '../../hooks/useSubmission'
 import { translations } from '../../utils/translations'
 import StepCompany from './StepCompany'
@@ -28,15 +28,13 @@ export default function FormPage() {
   const [submitError, setSubmitError] = useState(null)
 
   useEffect(() => {
-    getLinkByToken(token)
+    // The RPC marks the link as opened and returns the effective status (incl. expiry).
+    openForm(token)
       .then(data => {
         setLink(data)
         if (data.status === 'completed') { setStatus('completed'); return }
         if (data.status === 'expired')   { setStatus('expired');   return }
-        const today = new Date().toISOString().split('T')[0]
-        if (data.expires_at < today)     { setStatus('expired');   return }
         setStatus('active')
-        if (data.status === 'pending') markOpened(token).catch(() => {})
       })
       .catch(() => setStatus('invalid'))
   }, [token])
