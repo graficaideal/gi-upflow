@@ -84,7 +84,7 @@ function LogoutIcon() {
 }
 
 export default function BottomNav() {
-  const { logout } = useAuth()
+  const { logout, isStaff } = useAuth()
   const navigate = useNavigate()
   const [isDark, setIsDark] = useState(getInitialDark)
 
@@ -93,8 +93,8 @@ export default function BottomNav() {
     localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light')
   }, [isDark])
 
-  function handleLogout() {
-    logout()
+  async function handleLogout() {
+    await logout()
     navigate('/login')
   }
 
@@ -124,10 +124,10 @@ export default function BottomNav() {
         <span className="bottom-nav-label">Tema</span>
       </button>
 
-      <NavLink to="/settings" className={({ isActive }) => `bottom-nav-item${isActive ? ' active' : ''}`}>
+      {isStaff && <NavLink to="/settings" className={({ isActive }) => `bottom-nav-item${isActive ? ' active' : ''}`}>
         <span className="bottom-nav-icon"><GearIcon /></span>
         <span className="bottom-nav-label">Definições</span>
-      </NavLink>
+      </NavLink>}
 
       <button className="bottom-nav-item bottom-nav-logout" onClick={handleLogout}>
         <span className="bottom-nav-icon"><LogoutIcon /></span>

@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLinks, deleteLink, getLinkById } from '../hooks/useLinks'
+import { useAuth } from '../contexts/AuthContext'
 import { generateClientXML, downloadXML } from '../utils/xmlExport'
 import DeleteLinkModal from '../components/DeleteLinkModal'
 import RecreateLinkModal from '../components/RecreateLinkModal'
@@ -152,7 +153,9 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const { links, loading, removeLink } = useLinks()
   const [statusFilter, setStatusFilter] = useState('all')
+  const { vendor: authVendor } = useAuth()
   const [vendorFilter, setVendorFilter] = useState(() => {
+    if (authVendor) return 'all' // RLS already limits a vendor to their own links
     try {
       const stored = localStorage.getItem('upflow-active-vendor')
       return stored ? (JSON.parse(stored)?.name ?? 'all') : 'all'

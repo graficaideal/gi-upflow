@@ -59,9 +59,9 @@ function RootRedirect() {
 }
 
 function ProtectedLayout({ adminOnly = false }) {
-  const { session, isAdmin, loading } = useAuth()
+  const { session, hasAccess, isAdmin, loading } = useAuth()
   if (loading) return <AuthLoading />
-  if (!session) return <Navigate to="/login" replace />
+  if (!session || !hasAccess) return <Navigate to="/login" replace />
   if (adminOnly && !isAdmin) return <Navigate to="/dashboard" replace />
   return <AppLayout><Outlet /></AppLayout>
 }
@@ -74,6 +74,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/reset-password" element={<Login mode="reset" />} />
           <Route path="/form/:token" element={<FormPage />} />
 
           <Route element={<ProtectedLayout />}>
@@ -81,11 +82,11 @@ export default function App() {
             <Route path="/links/create" element={<CreateLink />} />
             <Route path="/links/:id" element={<LinkDetail />} />
             <Route path="/authorizations" element={<Authorizations />} />
-            <Route path="/settings" element={<Settings />} />
           </Route>
 
           <Route element={<ProtectedLayout adminOnly />}>
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>
       </BrowserRouter>

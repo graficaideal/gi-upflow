@@ -17,13 +17,22 @@ function json(body: unknown, status = 200) {
   })
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const NOTIFY_WINDOW_MS = 5 * 60 * 1000
+
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
+}
+
 function formatDatePt(iso: string): string {
   const d = new Date(iso)
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}, ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-function emailHtml(commercialName: string, vendorName: string, submittedAt: string, linkId: string): string {
+function emailHtml(rawCommercialName: string, rawVendorName: string, submittedAt: string, linkId: string): string {
+  const commercialName = escapeHtml(rawCommercialName)
+  const vendorName = escapeHtml(rawVendorName)
   const detailUrl = `https://up.graficaideal.pt/links/${linkId}`
   const submittedFormatted = formatDatePt(submittedAt)
 
@@ -110,26 +119,38 @@ serve(async (req) => {
     return json({ error: 'Method not allowed' }, 405)
   }
 
-  let body: {
-    link_id: string
-    commercial_name: string
-    vendor_id: string
-    submitted_at: string
-  }
-
+  // Only link_id is accepted from the (anonymous) caller; everything else is read
+  // from the DB, so this can't be used to send arbitrary emails.
+  let link_id: unknown
   try {
-    body = await req.json()
+    ({ link_id } = await req.json())
   } catch {
     return json({ error: 'Invalid JSON body' }, 400)
   }
 
-  const { link_id, commercial_name, vendor_id, submitted_at } = body
-
-  if (!link_id || !commercial_name || !vendor_id || !submitted_at) {
-    return json({ error: 'Missing required fields' }, 400)
+  if (typeof link_id !== 'string' || !UUID_RE.test(link_id)) {
+    return json({ error: 'Invalid link_id' }, 400)
   }
 
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+
+  const { data: link, error: linkError } = await admin
+    .from('upflow_links')
+    .select('commercial_name, vendor_id, status, submitted_at')
+    .eq('id', link_id)
+    .maybeSingle()
+
+  if (linkError || !link) return json({ error: 'Link not found' }, 404)
+
+  // Only right after a real submission; prevents replaying the call to spam vendors.
+  // ponytail: time window, not a sent-flag; add upflow_links.notified_at if duplicates matter.
+  const age = Date.now() - new Date(link.submitted_at ?? 0).getTime()
+  if (link.status !== 'completed' || !(age >= 0 && age <= NOTIFY_WINDOW_MS)) {
+    return json({ error: 'Link not eligible for notification' }, 409)
+  }
+  if (!link.vendor_id) return json({ success: true, skipped: 'no vendor' })
+
+  const { commercial_name, vendor_id, submitted_at } = link
 
   const { data: vendor, error: vendorError } = await admin
     .from('upflow_vendors')
@@ -151,7 +172,7 @@ serve(async (req) => {
     body: JSON.stringify({
       from: 'UpFlow <noreply@graficaideal.pt>',
       to: [vendor.email],
-      cc: ['financeiro@graficaideal.pt'],
+      cc: ['informatica@graficaideal.pt', 'financeiro@graficaideal.pt'],
       subject: `[UpFlow] Formulário concluído — ${commercial_name}`,
       html: emailHtml(commercial_name, vendor.name, submitted_at, link_id),
     }),
@@ -160,7 +181,7 @@ serve(async (req) => {
   if (!res.ok) {
     const err = await res.text()
     console.error('Resend error:', err)
-    return json({ error: 'Failed to send email', detail: err }, 502)
+    return json({ error: 'Failed to send email' }, 502) // detail stays in the logs, not sent to anon callers
   }
 
   const data = await res.json()

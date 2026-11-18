@@ -58,11 +58,11 @@ const NAV_ITEMS = [
 ]
 
 export default function Sidebar() {
-  const { logout } = useAuth()
+  const { logout, isStaff } = useAuth()
   const navigate = useNavigate()
 
-  function handleLogout() {
-    logout()
+  async function handleLogout() {
+    await logout()
     navigate('/login')
   }
 
@@ -89,10 +89,10 @@ export default function Sidebar() {
 
       <div className="sidebar-bottom">
         <ThemeToggle className="sidebar-link" />
-        <NavLink to="/settings" className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`} aria-label="Definições">
+        {isStaff && <NavLink to="/settings" className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`} aria-label="Definições">
           <span className="sidebar-icon"><GearIcon /></span>
           <span className="sidebar-tooltip">Definições</span>
-        </NavLink>
+        </NavLink>}
         <button className="sidebar-link" onClick={handleLogout} aria-label="Sair">
           <span className="sidebar-icon"><LogoutIcon /></span>
           <span className="sidebar-tooltip">Sair</span>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { createLink, getVendors } from '../hooks/useLinks'
+import { useAuth } from '../contexts/AuthContext'
 import { translations } from '../utils/translations'
 import './CreateLink.css'
 
@@ -60,6 +61,13 @@ export default function CreateLink() {
   const [copied, setCopied] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [vendors, setVendors] = useState([])
+  const { vendor: authVendor } = useAuth()
+
+  // A vendor always creates links for themselves; staff keep the last choice.
+  function defaultVendorId() {
+    if (authVendor) return authVendor.id
+    try { return JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id || '' } catch { return '' }
+  }
 
   const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm({
     defaultValues: {
@@ -84,12 +92,7 @@ export default function CreateLink() {
       setValue('vendor_id', prefill.vendor_id)
       return
     }
-    try {
-      const id = JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id
-      setValue('vendor_id', id || '')
-    } catch {
-      setValue('vendor_id', '')
-    }
+    setValue('vendor_id', defaultVendorId())
   }, [vendors])
 
   async function onSubmit({ vendor_id, commercial_name, expires_at, language }) {
@@ -118,10 +121,8 @@ export default function CreateLink() {
     setCopied(false)
     setLinkCommercialName('')
     reset()
-    try {
-      const id = JSON.parse(localStorage.getItem('upflow-active-vendor'))?.id
-      if (id) setValue('vendor_id', id)
-    } catch {}
+    const id = defaultVendorId()
+    if (id) setValue('vendor_id', id)
   }
 
   return (
