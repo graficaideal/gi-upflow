@@ -412,17 +412,17 @@ export default function Dashboard() {
       {!loading && filtered.length > 0 && (
         <>
           <div className="table-wrapper">
-            <table className="links-table">
+            <table className="links-table links-table--fixed">
               <thead>
                 <tr>
-                  <SortTh column="commercial_name" current={sortColumn} direction={sortDirection} onSort={handleSort}>Designação Comercial</SortTh>
-                  <SortTh column="vendor_name"     current={sortColumn} direction={sortDirection} onSort={handleSort}>Vendedor</SortTh>
-                  <SortTh column="created_at"      current={sortColumn} direction={sortDirection} onSort={handleSort}>Criado em</SortTh>
-                  <SortTh column="expires_at"      current={sortColumn} direction={sortDirection} onSort={handleSort}>Prazo</SortTh>
-                  <SortTh column="opened_at"       current={sortColumn} direction={sortDirection} onSort={handleSort} className="print-hide-col">Aberto em</SortTh>
-                  <SortTh column="email_sent_at"   current={sortColumn} direction={sortDirection} onSort={handleSort} className="print-hide-col">Email</SortTh>
-                  <SortTh column="status"          current={sortColumn} direction={sortDirection} onSort={handleSort}>Estado</SortTh>
-                  <th className="print-hide-col"></th>
+                  <SortTh column="commercial_name" current={sortColumn} direction={sortDirection} onSort={handleSort} className="col-name">Designação Comercial</SortTh>
+                  <SortTh column="vendor_name"     current={sortColumn} direction={sortDirection} onSort={handleSort} className="col-vendor">Vendedor</SortTh>
+                  <SortTh column="created_at"      current={sortColumn} direction={sortDirection} onSort={handleSort} className="col-date">Criado em</SortTh>
+                  <SortTh column="expires_at"      current={sortColumn} direction={sortDirection} onSort={handleSort} className="col-date">Prazo</SortTh>
+                  <SortTh column="opened_at"       current={sortColumn} direction={sortDirection} onSort={handleSort} className="col-datetime print-hide-col">Aberto em</SortTh>
+                  <SortTh column="email_sent_at"   current={sortColumn} direction={sortDirection} onSort={handleSort} className="col-email print-hide-col">Email</SortTh>
+                  <SortTh column="status"          current={sortColumn} direction={sortDirection} onSort={handleSort} className="col-status">Estado</SortTh>
+                  <th className="col-actions print-hide-col"></th>
                 </tr>
               </thead>
               <tbody>
@@ -430,8 +430,8 @@ export default function Dashboard() {
                   const s = STATUS_MAP[link.status] ?? { label: link.status, cls: '' }
                   return (
                     <tr key={link.id}>
-                      <td><span className="td-name-wrap">{link.commercial_name}<LangBadge lang={link.language} /></span></td>
-                      <td className="td-vendor">{link.vendor_name ?? '—'}</td>
+                      <td title={link.commercial_name}><span className="td-name-wrap"><span className="td-name-text">{link.commercial_name}</span><LangBadge lang={link.language} /></span></td>
+                      <td className="td-vendor" title={link.vendor_name ?? undefined}>{link.vendor_name ?? '—'}</td>
                       <td>{formatDate(link.created_at)}</td>
                       <td>{formatDate(link.expires_at)}</td>
                       <td className="td-muted print-hide-col">{formatDateTime(link.opened_at)}</td>
